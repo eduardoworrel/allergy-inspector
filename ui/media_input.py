@@ -25,11 +25,8 @@ def add_detective_theme():
                 color: #d1c7b7;
                 background-color: #3b3b3b;
             }
-            .bullet-point {
-                margin: 2px 0; /* Minimized spacing between bullet points */
-            }
-            /* Style for the ingredient labels */
-            .ingredient-label {
+            /* Style for the ingredient and allergy labels */
+            .ingredient-label, .allergy-label {
                 background-color: #3b3b3b;
                 color: #ffcc00;
                 padding: 5px 8px;
@@ -41,15 +38,10 @@ def add_detective_theme():
             .allergy-label {
                 background-color: #ff4d4d;
                 color: white;
-                padding: 5px 8px;
-                border-radius: 3px;
-                display: inline-block;
-                margin: 0 4px 4px 0;
-                font-weight: bold;
             }
-            /* Styling for detective icons */
+            /* Detective icon styling */
             .detective-icon {
-                content: url('https://example.com/magnifying-glass-icon.png'); /* Replace with a detective-themed icon */
+                content: url('https://example.com/magnifying-glass-icon.png'); /* Replace with actual detective icon URL */
                 margin-right: 5px;
             }
         </style>
@@ -66,7 +58,7 @@ def media_input():
     add_detective_theme()  # Apply detective theme
 
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
-    
+
     if file_type == "Image":
         uploaded_file = st.file_uploader("Upload an image of the food", type=["jpg", "jpeg", "png"])
         if uploaded_file:
@@ -86,11 +78,9 @@ def media_input():
                 encoded_image = image_to_base64(output.read())
                 response_generator = get_ingredients_model_response(encoded_image)
 
-                # Display ingredients as text
-                ingredients_text = ""
-                for response_part in response_generator:
-                    ingredients_text += response_part
-                message(ingredients_text)
+                # Display ingredients as text block
+                ingredients_text = "".join(response_generator)  # Joining response to create a single block of text
+                message(f"<div><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
 
                 # Display user allergies
                 labels_html = generate_labels(st.session_state["user_allergies"], label_type="allergy")
@@ -98,9 +88,7 @@ def media_input():
 
                 # Check for cross-reactions
                 response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state["user_allergies"]))
-                advice = ""
-                for response_part in response_generator:
-                    advice += response_part
+                advice = "".join(response_generator)  # Joining response to display without line spaces
                 message(advice)
 
             except Exception as e:
@@ -110,10 +98,10 @@ def media_input():
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
         if ingredients_text:
-            # Display ingredients as labels with detective icons
+            # Display ingredients in block format with detective theme
             ingredients_list = ingredients_text.split(",")  # Assuming ingredients are comma-separated
             labels_html = generate_labels(ingredients_list)
-            message(f'<div>🔎 Clues (Ingredients): {labels_html}</div>', is_user=True, allow_html=True)
+            message(f'<div><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
 
             # Display user allergies
             labels_html_allergies = generate_labels(st.session_state["user_allergies"], label_type="allergy")
@@ -121,10 +109,8 @@ def media_input():
 
             # Check for potential cross-reactions
             response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state["user_allergies"]))
-            advice = ""
-            for response_part in response_generator:
-                advice += response_part
+            advice = "".join(response_generator)  # Joining response to display without line spaces
             message(advice)
-    
+
     # Other file types remain the same...
 
