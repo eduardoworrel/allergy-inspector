@@ -3,12 +3,16 @@ from ui.sidebar import sidebar_setup
 from ui.media_input import media_input
 from streamlit_chat import message
 
-st.set_page_config(page_title= "Allergy Detector", page_icon="🔍")
+st.set_page_config(page_title="Allergy Detector", page_icon="🔍")
 
 sidebar_setup()
 
 if st.session_state["allergies_selected"]:
-    message("Hello there. What are you about to eat? Is it something you chose... or was it chosen for you? Perhaps there's a pattern, a clue hidden in the ingredients, the flavors, the texture that you don't know. So, hold on buddy. Let us investigate for you.")
+    st.markdown(
+        "<h2 style='text-align: center; color: #FF5733; font-weight: bold; font-family: monospace;'>"
+        "What’s on Your Plate? A Curious Investigation!</h2>",
+        unsafe_allow_html=True
+    )
     media_input()
 else:
-    st.markdown("# Well, well... what’s on the menu? Just the usual, or something... intriguing?🍽️")
+    st.markdown("# Well, well... what’s on the menu? Just the usual, or something... intriguing? 🍽️")
