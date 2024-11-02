@@ -47,17 +47,19 @@ def media_input():
                 color: white;
             }
             .ingredient-container {
-                line-height: 1.6;  /* Line spacing */
+                line-height: 1.5;  /* Adjusted line spacing for readability */
                 margin-bottom: 20px;  /* Space between ingredient sections */
                 padding: 15px;  /* Padding inside the container */
                 border: 1px solid #ddd;  /* Border around the ingredient block */
                 border-radius: 5px;  /* Rounded corners */
                 background-color: #ffffff;  /* White background for the block */
+                text-align: left;  /* Left-align text for consistency */
             }
             .explanation {
                 font-style: italic;  /* Italic style for explanation */
                 color: #555555;  /* Lighter text for explanation */
-                margin-top: 10px;  /* Space above explanation */
+                margin-top: 8px;  /* Space above explanation */
+                line-height: 1.4;  /* Line spacing for explanation */
             }
         </style>
     """, unsafe_allow_html=True)
