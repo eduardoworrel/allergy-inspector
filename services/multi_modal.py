@@ -1,22 +1,19 @@
-import base64
 from textwrap import dedent
 from openai import OpenAI
+import streamlit as st
 
-# Configuração da API
+
 base_url = 'https://api.rhymes.ai/v1'
-api_key = ''
 
 client = OpenAI(
     base_url=base_url,
-    api_key=api_key
+    api_key=st.secrets["OPENAI_API_KEY"]
 )
 
-# Função para carregar o prompt a partir de um arquivo .txt
 def load_prompt(filepath):
     with open(filepath, 'r') as file:
         return file.read().strip()
 
-# Função para montar o payload com base no tipo de entrada
 def get_ingredients_model_response(content):
 
     prompt_text = load_prompt('prompts/ingredients_prompt.txt')
