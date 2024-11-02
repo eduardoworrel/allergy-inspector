@@ -29,15 +29,17 @@ def add_theme(dark_mode):
                 .ingredient-label, .allergy-label {
                     background-color: #3b3b3b;
                     color: #ffcc00;
-                    padding: 5px 8px;
-                    border-radius: 3px;
-                    display: inline-block;
+                    padding: 5px 10px;
+                    border-radius: 5px;
                     margin: 0 4px 4px 0;
                     font-weight: bold;
                 }
                 .allergy-label {
                     background-color: #ff4d4d;
                     color: white;
+                }
+                .ingredients-block, .allergy-block {
+                    margin: 10px 0;
                 }
             </style>
         """, unsafe_allow_html=True)
@@ -63,15 +65,17 @@ def add_theme(dark_mode):
                 .ingredient-label, .allergy-label {
                     background-color: #d9d9d9;
                     color: #333333;
-                    padding: 5px 8px;
-                    border-radius: 3px;
-                    display: inline-block;
+                    padding: 5px 10px;
+                    border-radius: 5px;
                     margin: 0 4px 4px 0;
                     font-weight: bold;
                 }
                 .allergy-label {
                     background-color: #ff9999;
                     color: white;
+                }
+                .ingredients-block, .allergy-block {
+                    margin: 10px 0;
                 }
             </style>
         """, unsafe_allow_html=True)
@@ -89,7 +93,7 @@ def media_input():
     # Light/Dark mode toggle
     st.sidebar.markdown("### Theme")
     dark_mode = st.sidebar.checkbox("Enable Detective (Dark) Mode", value=True)
-    
+
     # Apply the chosen theme
     add_theme(dark_mode)
 
@@ -108,15 +112,15 @@ def media_input():
                 output = BytesIO()
                 image.save(output, format="JPEG", optimize=True, quality=30)
                 output.seek(0)
-                
+
                 encoded_image = image_to_base64(output.read())
                 response_generator = get_ingredients_model_response(encoded_image)
 
                 ingredients_text = "".join(response_generator)
-                message(f"<div><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
+                message(f"<div class='ingredients-block'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
 
                 labels_html = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-                message(f'<div>🕵️ Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
+                message(f'<div class="allergy-block">🕵️ Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
 
                 response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
                 advice = "".join(response_generator)
@@ -128,12 +132,12 @@ def media_input():
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
         if ingredients_text:
-            ingredients_list = ingredients_text.split(",")
+            ingredients_list = [ingredient.strip() for ingredient in ingredients_text.split(",")]
             labels_html = generate_labels(ingredients_list)
-            message(f'<div><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
+            message(f'<div class="ingredients-block"><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
 
             labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-            message(f'<div>🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
+            message(f'<div class="allergy-block">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
 
             response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
             advice = "".join(response_generator)
