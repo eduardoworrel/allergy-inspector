@@ -98,7 +98,7 @@ def media_input():
 
     elif file_type == "Text":
     # Replace the text area prompt with a more conversational message
-    ingredients_text = st.text_area("Hey buddy, what are you planning to eat today? Let me help check for any allergens!")
+        ingredients_text = st.text_area("Hey buddy, what are you planning to eat today? Let me help check for any allergens!")
     
     if ingredients_text:
         ingredients_list = ingredients_text.split(",")
