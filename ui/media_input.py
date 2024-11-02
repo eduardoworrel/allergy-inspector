@@ -10,7 +10,7 @@ def generate_labels(items, label_type="ingredient"):
     labels_html = ""
     css_class = "ingredient-label" if label_type == "ingredient" else "allergy-label"
     for item in items:
-        labels_html += f'<span class="{css_class}">{item}</span>'
+        labels_html += f'<span class="{css_class}">{item}</span> '  # Add a space after each label
     return labels_html
 
 # Main media input function
