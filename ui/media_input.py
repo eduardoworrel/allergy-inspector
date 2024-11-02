@@ -5,10 +5,10 @@ from PIL import Image
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
-# Function to apply the detective theme
-def add_theme(dark_mode):
+# Function to apply CSS based on the selected theme
+def apply_theme(dark_mode):
     if dark_mode:
-        # Dark (Detective) Theme CSS
+        # Dark Mode CSS
         st.markdown("""
             <style>
                 .reportview-container {
@@ -39,7 +39,6 @@ def add_theme(dark_mode):
                     background-color: #ff4d4d;
                     color: white;
                 }
-                /* Reduce line spacing and margin */
                 .message-content, .ingredient-label, .allergy-label {
                     line-height: 1.2;
                     margin: 0;
@@ -79,7 +78,6 @@ def add_theme(dark_mode):
                     background-color: #ff9999;
                     color: white;
                 }
-                /* Reduce line spacing and margin */
                 .message-content, .ingredient-label, .allergy-label {
                     line-height: 1.2;
                     margin: 0;
@@ -100,10 +98,10 @@ def generate_labels(items, label_type="ingredient"):
 def media_input():
     # Light/Dark mode toggle
     st.sidebar.markdown("### Theme")
-    dark_mode = st.sidebar.checkbox("Enable Detective (Dark) Mode", value=True)
+    dark_mode = st.sidebar.checkbox("Enable Dark Mode", value=True)
     
     # Apply the chosen theme
-    add_theme(dark_mode)
+    apply_theme(dark_mode)
 
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
 
@@ -112,7 +110,7 @@ def media_input():
         if uploaded_file:
             users_image = image_to_base64(uploaded_file.getvalue())
             message(f'<img width="100%" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True)
-            message("🕵️ Analyzing the evidence...")
+            message("Analyzing the image...")
 
             try:
                 img = Image.open(BytesIO(uploaded_file.getvalue()))
@@ -125,27 +123,27 @@ def media_input():
                 response_generator = get_ingredients_model_response(encoded_image)
 
                 ingredients_text = "".join(response_generator)
-                message(f"<div><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
+                message(f"<div><strong>Ingredients:</strong><br>{ingredients_text}</div>", allow_html=True)
 
                 labels_html = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-                message(f'<div>🕵️ Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
+                message(f'<div>Allergies: {labels_html}</div>', is_user=True, allow_html=True)
 
                 response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
                 advice = "".join(response_generator)
                 message(advice)
 
             except Exception as e:
-                message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
+                message("An error occurred while analyzing the image.", is_user=True, allow_html=True)
 
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
         if ingredients_text:
             ingredients_list = ingredients_text.split(",")
             labels_html = generate_labels(ingredients_list)
-            message(f'<div><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
+            message(f'<div><strong>Ingredients:</strong><br>{labels_html}</div>', allow_html=True)
 
             labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-            message(f'<div>🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
+            message(f'<div>Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
 
             response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
             advice = "".join(response_generator)
