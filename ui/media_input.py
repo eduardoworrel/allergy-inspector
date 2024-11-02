@@ -5,6 +5,10 @@ from PIL import Image
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
+# Emoji constants
+SAFE_EMOJI = "✅"  # Safe emoji
+DANGER_EMOJI = "⚠️"  # Danger emoji
+
 # Generate ingredient and allergy labels
 def generate_labels(items, label_type="ingredient"):
     labels_html = ""
@@ -12,6 +16,13 @@ def generate_labels(items, label_type="ingredient"):
     for item in items:
         labels_html += f'<span class="{css_class}">{item}</span>'
     return labels_html
+
+# Check for known allergies in ingredients
+def check_allergies(ingredients, known_allergies):
+    dangerous_items = [ingredient for ingredient in ingredients if ingredient in known_allergies]
+    if dangerous_items:
+        return DANGER_EMOJI + " Potential allergens detected: " + ", ".join(dangerous_items)
+    return SAFE_EMOJI + " No allergens detected."
 
 # Main media input function
 def media_input():
@@ -70,13 +81,15 @@ def media_input():
                 encoded_image = image_to_base64(output.read())
                 response_generator = get_ingredients_model_response(encoded_image)
 
-                ingredients_text = "".join(response_generator)
-                message(f"<div class='ingredients-block'><strong>Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
+                ingredients_text = "".join(response_generator).split(",")  # Assuming ingredients are comma-separated
+                message(f"<div class='ingredients-block'><strong>Clues (Ingredients):</strong><br>{generate_labels(ingredients_text)}</div>", allow_html=True)
 
-                labels_html = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-                message(f'<div class="allergy-block">Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
+                # Check for allergies
+                known_allergies = st.session_state.get("user_allergies", [])
+                allergy_message = check_allergies(ingredients_text, known_allergies)
+                message(allergy_message, is_user=True)
 
-                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
+                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(known_allergies))
                 advice = "".join(response_generator)
                 message(advice)
 
@@ -90,10 +103,12 @@ def media_input():
             labels_html = generate_labels(ingredients_list)
             message(f'<div class="ingredients-block"><strong>Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
 
-            labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-            message(f'<div class="allergy-block">Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
+            # Check for allergies
+            known_allergies = st.session_state.get("user_allergies", [])
+            allergy_message = check_allergies(ingredients_list, known_allergies)
+            message(allergy_message, is_user=True)
 
-            response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
+            response_generator = get_crossing_data_model_response(ingredients_text, ",".join(known_allergies))
             advice = "".join(response_generator)
             message(advice)
 
