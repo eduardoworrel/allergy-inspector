@@ -1,7 +1,7 @@
 import os
 import requests
 
-# Predefined allergy symptoms to use for video generation
+# Define common allergy symptom prompts
 allergy_symptom_prompts = {
     "pollen": "Person sneezing and rubbing eyes due to pollen allergy symptoms",
     "peanut": "Person experiencing skin rash and swelling from peanut allergy",
@@ -12,14 +12,19 @@ allergy_symptom_prompts = {
 }
 
 def get_allergy_prompt(allergy):
-    """Return the prompt for a given registered allergy."""
-    return allergy_symptom_prompts.get(allergy.lower())
+    """Return the prompt for a given allergy if it exists in the dictionary."""
+    prompt = allergy_symptom_prompts.get(allergy.lower())
+    if prompt:
+        print(f"Found prompt for allergy '{allergy}': {prompt}")
+    else:
+        print(f"No prompt found for allergy '{allergy}'")
+    return prompt
 
-# Generate video filename
+# Function to generate a video filename based on the allergy
 def generate_video_instructions(allergy):
     return f"video_output_{allergy}_symptoms.mp4"
 
-# Generate video using the Allegro API model
+# Function to make the API request to generate a video
 def generate_video(token, instructions):
     url = "https://api.rhymes.ai/v1/generateVideoSyn"
     headers = {
@@ -36,28 +41,37 @@ def generate_video(token, instructions):
 
     try:
         response = requests.post(url, headers=headers, json=data)
-        response.raise_for_status()
+        response.raise_for_status()  # Check for HTTP errors
+        print("API request successful.")
         return response.json()
     except requests.exceptions.RequestException as e:
-        return f"An error occurred: {str(e)}"
+        print(f"An error occurred during the API request: {str(e)}")
+        return None
 
-# Main function for generating allergy symptom videos
+# Main function to orchestrate the allergy video generation
 def main():
     # Fetch API token from environment
     bearer_token = os.getenv("ALLEGRO_API_KEY")
     if not bearer_token:
-        print("API token not found. Set the ALLEGRO_API_KEY environment variable.")
+        print("API token not found. Make sure to set the ALLEGRO_API_KEY environment variable.")
         return
 
-    # Registered allergies for the user
-    registered_allergies = input("Please enter your registered allergies, separated by commas: ").split(',')
+    # Get user input for registered allergies
+    user_input = input("Please enter your registered allergies, separated by commas: ").strip()
+    if not user_input:
+        print("No allergies entered. Please provide at least one allergy.")
+        return
 
+    # Split and clean the list of registered allergies
+    registered_allergies = [allergy.strip() for allergy in user_input.split(',')]
+    print(f"Registered allergies: {registered_allergies}")
+
+    # Process each allergy to generate videos
     for allergy in registered_allergies:
-        allergy = allergy.strip()  # Remove whitespace
         allergy_prompt = get_allergy_prompt(allergy)
         
         if allergy_prompt:
-            print(f"Generating video for {allergy} allergy symptoms.")
+            print(f"Generating video for '{allergy}' allergy symptoms.")
             
             # Generate video output filename
             video_filename = generate_video_instructions(allergy)
@@ -65,10 +79,13 @@ def main():
             # Generate video using the Allegro API
             response_data = generate_video(bearer_token, allergy_prompt)
             
-            print(f"Generated video filename: {video_filename}")
-            print("API response:", response_data)
+            if response_data:
+                print(f"Generated video filename: {video_filename}")
+                print("API response data:", response_data)
+            else:
+                print(f"Failed to generate video for allergy '{allergy}'.")
         else:
-            print(f"No prompt found for allergy: {allergy}")
+            print(f"No video generated for '{allergy}' - no matching prompt found.")
 
 # Run the main function
 if __name__ == "__main__":
