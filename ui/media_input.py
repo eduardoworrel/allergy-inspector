@@ -108,9 +108,8 @@ def media_input():
 
             try:
                 img = Image.open(BytesIO(uploaded_file.getvalue()))
-                image = img.resize((80, 80), Image.LANCZOS)
                 output = BytesIO()
-                image.save(output, format="JPEG", optimize=True, quality=30)
+                img.save(output, format="JPEG", optimize=True, quality=30)
                 output.seek(0)
 
                 encoded_image = image_to_base64(output.read())
