@@ -1,0 +1,6 @@
+Ingredients: {0} \n
+User Allergies: {1} \n
+
+compares the recognized ingredients with the user’s allergy profile to assess safety
+
+inform the ingredient emoji, the name, whether it is danger, warning or safe with emojis corresponding to the degree then a brief explanation

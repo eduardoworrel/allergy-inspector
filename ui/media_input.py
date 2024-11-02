@@ -1,46 +1,76 @@
 # ui/media_input.py
 
+from io import BytesIO
+
 import streamlit as st
+from streamlit_chat import message
 from PIL import Image
-from services.multi_modal import get_model_response
-from services.voice_model import synthesize_voice
-from services.video_model import generate_video_instructions
+from utils.media_handler import image_to_base64
+from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
+
+def generate_labels(allergies):
+    labels_html = ""
+    colors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF"]  # Cores para as labels
+    for index, allergy in enumerate(allergies):
+        color = colors[index % len(colors)]  # Ciclo entre as cores
+        label = f'<span style="background-color: {color}; color: white; padding: 5px 10px; border-radius: 5px; margin-right: 5px;">{allergy}</span>'
+        labels_html += label
+    return labels_html
 
 def media_input():
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
-
-    # Função para processar resposta e exibir vídeo final
-    def process_and_display_result(response):
-        audio_output = synthesize_voice(response)
-        video_output = generate_video_instructions(response)
-        final_video = merge_audio_video(audio_output, video_output)
-        st.video(final_video)
-
     if file_type == "Image":
         uploaded_file = st.file_uploader("Upload an image of the food", type=["jpg", "jpeg", "png"])
         if uploaded_file:
+            users_image = image_to_base64(uploaded_file.getvalue())
+            message(f'<img width="100%" src="data:image/png;base64,{users_image}"/>',is_user=True, allow_html=True)
+
+           
             image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Image", use_column_width=True)
-            ingredients_text = "Example OCR result text for image."  # Exemplo de texto para simulação do OCR
-            response = get_model_response(ingredients_text)
-            st.write("Instructions and transcription:", response)
-            process_and_display_result(response)
+            message("working on that...")
+            try:
+                img = Image.open(BytesIO(uploaded_file.getvalue()))
+                image = img.resize((80, 80), Image.LANCZOS)
+
+                output = BytesIO()
+                image.save(output, format="JPEG", optimize=True, quality=30)
+              
+                output.seek(0)
+                encoded_image = image_to_base64(output.read())
+                response_generator = get_ingredients_model_response( encoded_image)
+                ingredients_text = ""
+                for response_part in response_generator:
+                    ingredients_text += response_part
+                message(ingredients_text)
+
+                labels_html = generate_labels(st.session_state["user_allergies"])
+                message(f'<div>My allergies: {labels_html}</div>',is_user=True, allow_html=True)
+
+                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state["user_allergies"]))
+                adivices = ""
+                for response_part in response_generator:
+                    adivices += response_part
+                message(adivices)
+                
+            except Exception as e:
+                inner_exception = e.__context__ 
+                print(f"Outer exception: {e}")
+                print(f"Inner exception: {inner_exception}")
+           
 
     elif file_type == "Video":
         uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
         if uploaded_file:
             st.video(uploaded_file)
             ingredients_text = "Example OCR result text for video."  # Exemplo de texto para simulação do OCR
-            response = get_model_response(ingredients_text)
-            st.write("Instructions and transcription:", response)
-            process_and_display_result(response)
+            get_model_response(ingredients_text)
+
 
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
         if ingredients_text:
-            response = get_model_response(ingredients_text)
-            st.write("Instructions and transcription:", response)
-            process_and_display_result(response)
+            get_model_response(ingredients_text)
+
 
     elif file_type == "Camera":
         enable = st.checkbox("Enable camera")
@@ -49,6 +79,4 @@ def media_input():
             image = Image.open(img_file_buffer)
             st.image(image, caption="Captured Image", use_column_width=True)
             ingredients_text = "Example OCR result text for camera image."  # Exemplo de texto para simulação do OCR
-            response = get_model_response(ingredients_text)
-            st.write("Instructions and transcription:", response)
-            process_and_display_result(response)
+            get_model_response(ingredients_text)
