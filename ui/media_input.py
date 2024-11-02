@@ -95,6 +95,13 @@ def media_input():
 
             except Exception as e:
                 message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
+    elif file_type == "Video":
+        uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
+        if uploaded_file:
+            st.video(uploaded_file)
+            ingredients_text = "Example OCR result text for video."  # Example OCR result text for video simulation
+            get_model_response(ingredients_text)
+
 
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
@@ -113,5 +120,13 @@ def media_input():
             response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
             advice = "".join(response_generator)
             message(advice)
+    elif file_type == "Camera":
+        enable = st.checkbox("Enable camera")
+        img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
+        if img_file_buffer:
+            image = Image.open(img_file_buffer)
+            st.image(image, caption="Captured Image", use_column_width=True)
+            ingredients_text = "Example OCR result text for camera image."  # Example OCR result text for camera image simulation
+            get_model_response(ingredients_text)
 
     # Other file types remain the same...
