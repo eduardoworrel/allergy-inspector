@@ -5,7 +5,7 @@ from ui.sidebar import sidebar_setup
 from ui.media_input import media_input
 from streamlit_chat import message
 
-st.set_page_config(page_title= "Your Allergy Detector🕵️‍♂️", page_icon="🔍")
+st.set_page_config(page_title= "Your Allergy Detector", page_icon="🔍")
 
 sidebar_setup()
 
