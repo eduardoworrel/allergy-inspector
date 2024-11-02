@@ -1,1 +1,1 @@
-# allergy-detector
+# allergy-inspector
