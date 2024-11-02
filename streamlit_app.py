@@ -8,9 +8,9 @@ st.set_page_config(page_title="Allergy Detector", page_icon="🔍")
 sidebar_setup()
 
 if st.session_state["allergies_selected"]:
-    st.markdown(
-        "<h2 style='text-align: center; color: #FF5733; font-weight: bold; font-family: monospace;'>"
-        "What’s on Your Plate? A Curious Investigation!</h2>",
+    # Display the styled detective-themed message using the streamlit_chat message function
+    message(
+        "<h3 style='color: #333333; font-family: monospace;'>What’s on Your Plate? A Curious Investigation!</h3>",
         unsafe_allow_html=True
     )
     media_input()
