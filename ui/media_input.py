@@ -97,23 +97,21 @@ def media_input():
                 message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
 
     elif file_type == "Text":
-    # Replace the text area prompt with a more conversational message
-        ingredients_text = st.text_area("Hey buddy, what are you planning to eat today? Let me help check for any allergens!")
-    
-    if ingredients_text:
-        ingredients_list = ingredients_text.split(",")
-        labels_html = generate_labels(ingredients_list)
-        message(f'<div class="ingredient-container"><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
+        ingredients_text = st.text_area("Enter or paste the list of ingredients")
+        if ingredients_text:
+            ingredients_list = ingredients_text.split(",")
+            labels_html = generate_labels(ingredients_list)
+            message(f'<div class="ingredient-container"><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
 
-        labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-        message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
+            labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
+            message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
 
-        # Example explanation (customize this part as needed)
-        explanation_text = "These ingredients are commonly found in various dishes. Ensure to check if they trigger any allergies."
-        message(f'<div class="explanation">{explanation_text}</div>', allow_html=True)
+            # Example explanation (customize this part as needed)
+            explanation_text = "These ingredients are commonly found in various dishes. Ensure to check if they trigger any allergies."
+            message(f'<div class="explanation">{explanation_text}</div>', allow_html=True)
 
-        # Get the allergy advice based on ingredients
-        response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
-        advice = "".join(response_generator)
-        message(advice)
+            response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
+            advice = "".join(response_generator)
+            message(advice)
 
+    # Other file types remain the same...
