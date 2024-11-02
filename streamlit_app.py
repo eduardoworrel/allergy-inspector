@@ -13,4 +13,5 @@ if st.session_state["allergies_selected"]:
     message("Hello there. What are you about to eat? Is it something you chose... or was it chosen for you? Perhaps there's a pattern, a clue hidden in the ingredients, the flavors, the texture that you don't know. So, hold on buddy. Let us investigate for you.")
     media_input()
 else:
-    st.markdown("# Well, well... what’s on the menu? Just the usual, or something... intriguing?🍽️")
+    st.markdown("# Please select your allergies in the sidebar.")
+
