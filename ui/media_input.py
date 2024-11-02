@@ -5,81 +5,6 @@ from PIL import Image
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
-# Function to apply the detective theme
-def add_theme(dark_mode):
-    if dark_mode:
-        # Dark (Detective) Theme CSS
-        st.markdown("""
-            <style>
-                .reportview-container {
-                    background-color: #2b2b2b;
-                    color: #d1c7b7;
-                    font-family: 'Courier New', Courier, monospace;
-                }
-                .stButton>button {
-                    color: #ffffff;
-                    background-color: #6c757d;
-                    border-radius: 5px;
-                    font-weight: bold;
-                }
-                .stTextInput>div>div>input {
-                    color: #d1c7b7;
-                    background-color: #3b3b3b;
-                }
-                .ingredient-label, .allergy-label {
-                    background-color: #3b3b3b;
-                    color: #ffcc00;
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                    margin: 0 4px 4px 0;
-                    font-weight: bold;
-                }
-                .allergy-label {
-                    background-color: #ff4d4d;
-                    color: white;
-                }
-                .ingredients-block, .allergy-block {
-                    margin: 10px 0;
-                }
-            </style>
-        """, unsafe_allow_html=True)
-    else:
-        # Light Mode CSS
-        st.markdown("""
-            <style>
-                .reportview-container {
-                    background-color: #f0f0f5;
-                    color: #333333;
-                    font-family: Arial, sans-serif;
-                }
-                .stButton>button {
-                    color: #333333;
-                    background-color: #e7e7e7;
-                    border-radius: 5px;
-                    font-weight: bold;
-                }
-                .stTextInput>div>div>input {
-                    color: #333333;
-                    background-color: #ffffff;
-                }
-                .ingredient-label, .allergy-label {
-                    background-color: #d9d9d9;
-                    color: #333333;
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                    margin: 0 4px 4px 0;
-                    font-weight: bold;
-                }
-                .allergy-label {
-                    background-color: #ff9999;
-                    color: white;
-                }
-                .ingredients-block, .allergy-block {
-                    margin: 10px 0;
-                }
-            </style>
-        """, unsafe_allow_html=True)
-
 # Generate ingredient and allergy labels
 def generate_labels(items, label_type="ingredient"):
     labels_html = ""
@@ -90,12 +15,41 @@ def generate_labels(items, label_type="ingredient"):
 
 # Main media input function
 def media_input():
-    # Light/Dark mode toggle
-    st.sidebar.markdown("### Theme")
-    dark_mode = st.sidebar.checkbox("Enable Detective (Dark) Mode", value=True)
-
-    # Apply the chosen theme
-    add_theme(dark_mode)
+    # Apply a single light theme
+    st.markdown("""
+        <style>
+            .reportview-container {
+                background-color: #f0f0f5;
+                color: #333333;
+                font-family: Arial, sans-serif;
+            }
+            .stButton>button {
+                color: #333333;
+                background-color: #e7e7e7;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            .stTextInput>div>div>input {
+                color: #333333;
+                background-color: #ffffff;
+            }
+            .ingredient-label, .allergy-label {
+                background-color: #d9d9d9;
+                color: #333333;
+                padding: 5px 10px;
+                border-radius: 5px;
+                margin: 0 4px 4px 0;
+                font-weight: bold;
+            }
+            .allergy-label {
+                background-color: #ff9999;
+                color: white;
+            }
+            .ingredients-block, .allergy-block {
+                margin: 10px 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
 
@@ -108,8 +62,9 @@ def media_input():
 
             try:
                 img = Image.open(BytesIO(uploaded_file.getvalue()))
+                image = img.resize((80, 80), Image.LANCZOS)
                 output = BytesIO()
-                img.save(output, format="JPEG", optimize=True, quality=30)
+                image.save(output, format="JPEG", optimize=True, quality=30)
                 output.seek(0)
 
                 encoded_image = image_to_base64(output.read())
@@ -143,3 +98,7 @@ def media_input():
             message(advice)
 
     # Other file types remain the same...
+
+# Call the main function
+if __name__ == "__main__":
+    media_input()
