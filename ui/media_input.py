@@ -39,6 +39,12 @@ def add_theme(dark_mode):
                     background-color: #ff4d4d;
                     color: white;
                 }
+                /* Reduce line spacing and margin */
+                .message-content, .ingredient-label, .allergy-label {
+                    line-height: 1.2;
+                    margin: 0;
+                    padding: 0;
+                }
             </style>
         """, unsafe_allow_html=True)
     else:
@@ -72,6 +78,12 @@ def add_theme(dark_mode):
                 .allergy-label {
                     background-color: #ff9999;
                     color: white;
+                }
+                /* Reduce line spacing and margin */
+                .message-content, .ingredient-label, .allergy-label {
+                    line-height: 1.2;
+                    margin: 0;
+                    padding: 0;
                 }
             </style>
         """, unsafe_allow_html=True)
@@ -140,4 +152,3 @@ def media_input():
             message(advice)
 
     # Other file types remain the same...
-
