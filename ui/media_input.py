@@ -15,17 +15,17 @@ def generate_labels(items, label_type="ingredient"):
 
 # Main media input function
 def media_input():
-    # Set the light mode theme
+    # Set the light mode theme with aesthetics
     st.markdown("""
         <style>
             .reportview-container {
-                background-color: #f0f0f5;
-                color: #333333;
+                background-color: #f9f9f9;  /* Light background */
+                color: #333333;  /* Dark text color */
                 font-family: Arial, sans-serif;
             }
             .stButton>button {
-                color: #333333;
-                background-color: #e7e7e7;
+                color: #fff;
+                background-color: #007BFF;  /* Button color */
                 border-radius: 5px;
                 font-weight: bold;
             }
@@ -34,8 +34,8 @@ def media_input():
                 background-color: #ffffff;
             }
             .ingredient-label, .allergy-label {
-                background-color: #d9d9d9;
-                color: #333333;
+                background-color: #d9d9d9;  /* Ingredient label color */
+                color: #333333;  /* Dark text for labels */
                 padding: 5px 8px;
                 border-radius: 3px;
                 display: inline-block;
@@ -43,12 +43,21 @@ def media_input():
                 font-weight: bold;
             }
             .allergy-label {
-                background-color: #ff9999;
+                background-color: #ff9999;  /* Allergy label color */
                 color: white;
             }
             .ingredient-container {
-                line-height: 1.6; /* Adjusted line spacing */
-                margin-bottom: 20px; /* Space between ingredient sections */
+                line-height: 1.6;  /* Line spacing */
+                margin-bottom: 20px;  /* Space between ingredient sections */
+                padding: 15px;  /* Padding inside the container */
+                border: 1px solid #ddd;  /* Border around the ingredient block */
+                border-radius: 5px;  /* Rounded corners */
+                background-color: #ffffff;  /* White background for the block */
+            }
+            .explanation {
+                font-style: italic;  /* Italic style for explanation */
+                color: #555555;  /* Lighter text for explanation */
+                margin-top: 10px;  /* Space above explanation */
             }
         </style>
     """, unsafe_allow_html=True)
@@ -95,9 +104,12 @@ def media_input():
             labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
             message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
 
+            # Example explanation (customize this part as needed)
+            explanation_text = "These ingredients are commonly found in various dishes. Ensure to check if they trigger any allergies."
+            message(f'<div class="explanation">{explanation_text}</div>', allow_html=True)
+
             response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
             advice = "".join(response_generator)
             message(advice)
 
     # Other file types remain the same...
-
