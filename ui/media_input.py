@@ -17,6 +17,7 @@ def generate_labels(items):
 
 def media_input():
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
+    
     if file_type == "Image":
         uploaded_file = st.file_uploader("Upload an image of the food", type=["jpg", "jpeg", "png"])
         if uploaded_file:
@@ -24,18 +25,20 @@ def media_input():
             message(f'<img width="100%" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True)
 
             image = Image.open(uploaded_file)
-            message("working on that...")
+            message("Working on that...")
+
             try:
                 img = Image.open(BytesIO(uploaded_file.getvalue()))
                 image = img.resize((80, 80), Image.LANCZOS)
 
                 output = BytesIO()
                 image.save(output, format="JPEG", optimize=True, quality=30)
-
                 output.seek(0)
+                
                 encoded_image = image_to_base64(output.read())
                 response_generator = get_ingredients_model_response(encoded_image)
-                
+
+                # Display ingredients as text
                 ingredients_text = ""
                 for response_part in response_generator:
                     ingredients_text += response_part
@@ -45,7 +48,7 @@ def media_input():
                 labels_html = generate_labels(st.session_state["user_allergies"])
                 message(f'<div>My allergies: {labels_html}</div>', is_user=True, allow_html=True)
 
-                # Display ingredient warnings based on allergies
+                # Check for potential cross-reactions
                 response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state["user_allergies"]))
                 adivices = ""
                 for response_part in response_generator:
