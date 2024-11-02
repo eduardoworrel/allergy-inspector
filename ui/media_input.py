@@ -74,13 +74,15 @@ def media_input():
             message("🕵️ Analyzing the evidence...")
 
             try:
-                img = Image.open(BytesIO(uploaded_file.getvalue()))
-                image = img.resize((80, 80), Image.LANCZOS)
-                output = BytesIO()
-                image.save(output, format="JPEG", optimize=True, quality=30)
-                output.seek(0)
+                #img = Image.open(BytesIO(uploaded_file.getvalue()))
+                #image = img.resize((80, 80), Image.LANCZOS)
+                #output = BytesIO()
+                #image.save(output, format="JPEG", optimize=True, quality=30)
+                #output.seek(0)
 
-                encoded_image = image_to_base64(output.read())
+                # encoded_image = image_to_base64(output.read())
+                encoded_image = image_to_base64(uploaded_file.getvalue())
+                
                 response_generator = get_ingredients_model_response(encoded_image)
 
                 ingredients_text = "".join(response_generator)
