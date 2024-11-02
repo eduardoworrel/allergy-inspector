@@ -9,7 +9,7 @@ allergy_options = ["Nuts", "Dairy", "Gluten", "Seafood", "Soy", "Eggs"]
 def sidebar_setup():
     init_session_state()
     
-    st.sidebar.markdown("# Allergy Assistant 🤧")
+    st.sidebar.markdown("# Allergy Detector 🤧")
     user_allergies = st.sidebar.multiselect(
         "Select your allergies:",
         options=allergy_options,
