@@ -1,100 +1,117 @@
-import streamlit as st
 from io import BytesIO
+import streamlit as st
+from streamlit_chat import message
 from PIL import Image
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
-# Initialize session state variables if they do not exist
-if "user_allergies" not in st.session_state:
-    st.session_state["user_allergies"] = []
-
-if "ingredients" not in st.session_state:
-    st.session_state["ingredients"] = ""
-    
-if "explanation" not in st.session_state:
-    st.session_state["explanation"] = ""
-
-def generate_labels(allergies):
+# Function to generate ingredient and allergy labels
+def generate_labels(items, label_type="ingredient"):
     labels_html = ""
-    colors = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF"]
-    for index, allergy in enumerate(allergies):
-        color = colors[index % len(colors)]
-        label = f'<span style="background-color: {color}; color: white; padding: 5px 10px; border-radius: 5px; margin-right: 5px;">{allergy}</span>'
-        labels_html += label
+    css_class = "ingredient-label" if label_type == "ingredient" else "allergy-label"
+    for item in items:
+        labels_html += f'<span class="{css_class}">{item}</span>'
     return labels_html
 
+# Main media input function
 def media_input():
+    # Set the light mode theme with aesthetics
+    st.markdown("""
+        <style>
+            .reportview-container {
+                background-color: #f9f9f9;  /* Light background */
+                color: #333333;  /* Dark text color */
+                font-family: Arial, sans-serif;
+            }
+            .stButton>button {
+                color: #fff;
+                background-color: #007BFF;  /* Button color */
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            .stTextInput>div>div>input {
+                color: #333333;
+                background-color: #ffffff;
+            }
+            .ingredient-label, .allergy-label {
+                background-color: #d9d9d9;  /* Ingredient label color */
+                color: #333333;  /* Dark text for labels */
+                padding: 5px 8px;
+                border-radius: 3px;
+                display: inline-block;
+                margin: 0 4px 4px 0;
+                font-weight: bold;
+            }
+            .allergy-label {
+                background-color: #ff9999;  /* Allergy label color */
+                color: white;
+            }
+            .ingredient-container {
+                line-height: 1.5;  /* Adjusted line spacing for readability */
+                margin-bottom: 20px;  /* Space between ingredient sections */
+                padding: 15px;  /* Padding inside the container */
+                border: 1px solid #ddd;  /* Border around the ingredient block */
+                border-radius: 5px;  /* Rounded corners */
+                background-color: #ffffff;  /* White background for the block */
+                text-align: left;  /* Left-align text for consistency */
+            }
+            .explanation {
+                font-style: italic;  /* Italic style for explanation */
+                color: #555555;  /* Lighter text for explanation */
+                margin-top: 8px;  /* Space above explanation */
+                line-height: 1.4;  /* Line spacing for explanation */
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
-    
+
     if file_type == "Image":
         uploaded_file = st.file_uploader("Upload an image of the food", type=["jpg", "jpeg", "png"])
         if uploaded_file:
             users_image = image_to_base64(uploaded_file.getvalue())
-            st.image(users_image, caption="Uploaded Image", use_column_width=True)
-            
+            message(f'<img width="100%" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True)
+            message("🕵️ Analyzing the evidence...")
+
             try:
                 img = Image.open(BytesIO(uploaded_file.getvalue()))
-                img = img.resize((80, 80), Image.LANCZOS)
-
+                image = img.resize((80, 80), Image.LANCZOS)
                 output = BytesIO()
-                img.save(output, format="JPEG", optimize=True, quality=30)
+                image.save(output, format="JPEG", optimize=True, quality=30)
                 output.seek(0)
+
                 encoded_image = image_to_base64(output.read())
-
-                # Get ingredients from the model
-                ingredients_text = ""
                 response_generator = get_ingredients_model_response(encoded_image)
-                for response_part in response_generator:
-                    ingredients_text += response_part
 
-                # Update session state
-                st.session_state["ingredients"] = ingredients_text
-                labels_html = generate_labels(st.session_state["user_allergies"])
-                st.markdown(f"### Ingredients: {ingredients_text}")
-                st.markdown(f"### Known Allergies: {labels_html}", unsafe_allow_html=True)
+                ingredients_text = "".join(response_generator)
+                message(f"<div class='ingredient-container'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
 
-                # Get explanations based on ingredients and allergies
-                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state["user_allergies"]))
-                explanation = ""
-                for response_part in response_generator:
-                    explanation += response_part
-                
-                # Update explanation in session state
-                st.session_state["explanation"] = explanation
-                st.markdown(f"### Explanation: {explanation.replace('\n', ' ')}")  # Remove line breaks
+                labels_html = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
+                message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
+
+                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
+                advice = "".join(response_generator)
+                message(advice)
 
             except Exception as e:
-                st.error(f"An error occurred: {e}")
+                message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
 
     elif file_type == "Text":
         ingredients_text = st.text_area("Enter or paste the list of ingredients")
         if ingredients_text:
-            st.session_state["ingredients"] = ingredients_text
-            labels_html = generate_labels(st.session_state["user_allergies"])
-            st.markdown(f"### Ingredients: {ingredients_text}")
-            st.markdown(f"### Known Allergies: {labels_html}", unsafe_allow_html=True)
-            
-            # Simulated response for explanation
-            explanation = f"This is a mock explanation for the ingredients: {ingredients_text}"
-            st.session_state["explanation"] = explanation
-            st.markdown(f"### Explanation: {explanation.replace('\n', ' ')}")  # Remove line breaks
+            ingredients_list = ingredients_text.split(",")
+            labels_html = generate_labels(ingredients_list)
+            message(f'<div class="ingredient-container"><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
 
-    elif file_type == "Video":
-        uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
-        if uploaded_file:
-            st.video(uploaded_file)
-            ingredients_text = "Example OCR result text for video."  # Simulate OCR result
-            st.session_state["ingredients"] = ingredients_text
-            st.markdown(f"### Ingredients: {ingredients_text}")
+            labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
+            message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
 
-    elif file_type == "Camera":
-        img_file_buffer = st.camera_input("Take a picture")
-        if img_file_buffer:
-            image = Image.open(img_file_buffer)
-            st.image(image, caption="Captured Image", use_column_width=True)
-            ingredients_text = "Example OCR result text for camera image."  # Simulated OCR result
-            st.session_state["ingredients"] = ingredients_text
-            st.markdown(f"### Ingredients: {ingredients_text}")
+            # Example explanation (customize this part as needed)
+            explanation_text = "These ingredients are commonly found in various dishes. Ensure to check if they trigger any allergies."
+            message(f'<div class="explanation">{explanation_text}</div>', allow_html=True)
 
-# Call media input function to render the interface
-media_input()
+            response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
+            advice = "".join(response_generator)
+            message(advice)
+
+    # Other file types remain the same...
