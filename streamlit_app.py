@@ -21,20 +21,16 @@ if st.session_state["allergies_selected"]:
         f"Hello {st.session_state['user_name']}. What are you about to eat? "
         "Is it something you chose... or was it chosen for you? Perhaps there's a "
         "pattern, a clue hidden in the ingredients, the flavors, the texture that you "
-        "don't know. So, hold on buddy. Let us investigate for you. "
-        "I am an allergy detective. Ask me whether the food is safe or unsafe for you! "
-        "(unsafe - red and safe - green)"
+        "don't know. So, hold on buddy. Let us investigate for you."
     )
     message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
    
     media_input()
 else:
     st.markdown(
-        """
-        I am an allergy detective. Ask me whether the food is 
-        <span style="color: green;">safe</span> or 
-        <span style="color: red;">unsafe</span> for you!
-        """,
+        "I am an allergy detective. Ask me whether the food is "
+        "<span style='color: green;'>safe</span> or "
+        "<span style='color: red;'>unsafe</span> for you!",
         unsafe_allow_html=True
     )
     if st.button("Start again"):
