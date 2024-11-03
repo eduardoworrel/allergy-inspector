@@ -42,5 +42,5 @@ if st.session_state["allergies_selected"]:
 else:
     st.markdown("# Hey buddy! I am an allergy detective (yeah, that's my name). Let me tell you the food that you are about to eat is <span style='color:green'>safe</span> or <span style='color:red'>unsafe</span> for you!", unsafe_allow_html=True)
     
-    if st.button("Start again"):
+    if st.button("Let us analyze the evidence for you"):
         st.rerun()
