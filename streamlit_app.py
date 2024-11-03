@@ -46,4 +46,4 @@ else:
         st.rerun()
 
 
-what if i wnat to add a picture of cartoon detective on the right side of the screen
+
