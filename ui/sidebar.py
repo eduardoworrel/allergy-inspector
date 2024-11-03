@@ -63,7 +63,7 @@ def sidebar_setup():
             
             # Input para o avatar do usuário
             avatar = st.file_uploader(
-                "Upload your avatar image (optional):", 
+                "Upload your picture (optional):", 
                 type=["jpg", "jpeg", "png"]
             )
             if avatar:
