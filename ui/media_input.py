@@ -26,7 +26,7 @@ def parse_ingredient_assessment(assessment):
         }
     except:
         return None
-
+ 
 def generate_labels(items, label_type="ingredient"):
     css_class = "ingredient-label" if label_type == "ingredient" else "allergy-label"
     labels_html = ", ".join(f'<span class="{css_class}">{item} </span>' for item in items)
@@ -134,6 +134,7 @@ def bot_display_ingredients(ingredients_text):
 
 # Helper function to check allergies 
 def check_allergies(ingredients_text):
+
     allergies = st.session_state.get("user_allergies", [])
     labels_html = generate_labels(allergies, label_type="allergy")
     message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image)
@@ -143,19 +144,19 @@ def check_allergies(ingredients_text):
         with st.spinner('Wait for it...'):
             messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
             alarm = False
-            if messages:
-                for advice in messages:                    
-                    obj = parse_ingredient_assessment(advice)
-                    if obj:
-                        if alarm == False and obj["safety_status"] == "dangerous":
-                            alarm = True
-                            with open("./static/alert.mp3", "rb") as f:
-                                data = f.read()
-                                audio_base64 = base64.b64encode(data).decode('utf-8')
-                                audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-                                st.markdown(audio_tag, unsafe_allow_html=True)
-                        result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"])
-                        message(result, logo=bot_image, allow_html=True)
+            for advice in messages:        
+                message(advice)
+                obj = parse_ingredient_assessment(advice)
+                if obj:
+                    if alarm == False and obj["safety_status"] == "dangerous":
+                        with open("./static/alert.mp3", "rb") as f:
+                            data = f.read()
+                            audio_base64 = base64.b64encode(data).decode('utf-8')
+                            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
+                            st.markdown(audio_tag, unsafe_allow_html=True)
+                        alarm = True
+                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"])
+                    message(result, logo=bot_image, allow_html=True)
 
                     # container.write("obj.emoji")
                     # container.write(obj.emoji) 

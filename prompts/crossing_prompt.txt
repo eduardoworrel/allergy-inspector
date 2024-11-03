@@ -3,14 +3,17 @@ Ingredients:
 User Allergies:
 {1}
 
-Compare the ingredients with the user’s allergy profile. For each ingredient, return an assessment in this format and order them from most dangerous to safest:
+Assess each ingredient against the user's allergy profile. Return the result in a structured list format, following exactly this template for each item:
+
 [safety status, ingredient emoji, ingredient name, description]
 
-The safety status should be:
-- "dangerous" if the ingredient contains the allergen.
-- "alert" if there's a mild risk or possible cross-contamination.
-- "safe" if there is no allergy risk.
+Guidelines:
+1. "safety status" should be:
+   - "dangerous" if the ingredient contains the allergen.
+   - "alert" if there is a mild risk or possible cross-contamination.
+   - "safe" if there is no allergy risk.
+2. The "ingredient emoji" should visually represent the ingredient (e.g., 🥛 for milk, 🌰 for nuts).
+3. Include only ingredients present in the list; avoid adding extra items.
+4. Structure the list by ranking from "most dangerous" to "safest".
 
-Avoid assessing ingredients that are not in the list, and provide only essential details about the safety status.
-
-The emoji should represent the ingredient itself (e.g. 🥛 for milk or 🌰 for nuts)
+Return the list strictly in this format and avoid any additional commentary outside the template.
