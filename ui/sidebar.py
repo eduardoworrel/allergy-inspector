@@ -39,9 +39,11 @@ def sidebar_setup():
 
     # Display the additional information only if the user clicks "Yes, tell me!"
     if option == "Yes, tell me!":
+        # This block executes only if the user selects "Yes, tell me!"
         st.sidebar.markdown("Well, we use the powerful Aria model 💪.")
         st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
     elif option == "No, I don't want to know this!":
+        # This block executes if the user selects "No, I don't want to know this!"
         st.sidebar.markdown("No issues, your loss :)")
 
     @st.dialog("Setting up")
