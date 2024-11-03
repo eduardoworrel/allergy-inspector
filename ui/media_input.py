@@ -34,7 +34,7 @@ def generate_labels(items, label_type="ingredient"):
 def media_input():
     apply_styling() 
     
-    _,_,col1, col2, col3 = st.columns(5)
+    _,col1, col2, col3 = st.columns(4)
 
     gallery = col1.button("🖼️ Upload a picture", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
     camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
