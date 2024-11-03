@@ -11,6 +11,6 @@ The safety status should be:
 - "alert" if there's a mild risk or possible cross-contamination.
 - "safe" if there is no allergy risk.
 
-Avoid lengthy explanations and include only essential details about the safety status.
+Avoid assessing ingredients that are not in the list, and provide only essential details about the safety status.
 
 The emoji should represent the ingredient itself (e.g. 🥛 for milk or 🌰 for nuts)

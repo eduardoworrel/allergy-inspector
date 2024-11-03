@@ -15,4 +15,4 @@ def init_session_state():
             "Shellfish", "Fish", "Soy", "Eggs", "Sesame", "Corn", "Mustard", "Celery", 
             "Sulfites", "Legumes", "Nightshades", "Fruits", "Vegetables", "Chocolate",
             "Alcohol", "Caffeine", "Pork", "Red Meat", "Garlic", "Onion", "Spices"
-        ]
+        ] 
