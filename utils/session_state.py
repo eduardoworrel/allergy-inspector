@@ -10,4 +10,9 @@ def init_session_state():
         st.session_state["uploaded_file"] = None
         st.session_state["active"] = False
         st.session_state["selected"] = ""
-        
+        st.session_state["allergy_options"] = [ 
+            "Nuts", "Peanuts", "Tree Nuts", "Dairy", "Lactose", "Gluten", "Wheat", "Seafood",
+            "Shellfish", "Fish", "Soy", "Eggs", "Sesame", "Corn", "Mustard", "Celery", 
+            "Sulfites", "Legumes", "Nightshades", "Fruits", "Vegetables", "Chocolate",
+            "Alcohol", "Caffeine", "Pork", "Red Meat", "Garlic", "Onion", "Spices"
+        ]
