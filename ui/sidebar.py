@@ -24,16 +24,15 @@ def sidebar_setup():
     # Adding the bullet points without extra space
     st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
     st.sidebar.markdown("✅ We are really accurate!*")
-    st.sidebar.markdown("✅ We are fun to interact with!")
+    st.sidebar.markdown("✅ We are fun to interact with!")  # This line now has no additional spacing below it
 
-    # Add some space before the fun fact
-    st.sidebar.markdown("")  # Empty line for spacing
-    st.sidebar.markdown("")  # Another empty line for more spacing
+    # Reduced space before the fun fact section
+    st.sidebar.markdown("")  # Only one empty line for spacing
 
     # Adding the fun fact section with a heading
     st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
-    # Adding radio buttons for user options, with no default selected
+    # Adding radio buttons for user options
     option = st.sidebar.radio("Do you want to know why we are so accurate?", 
                                ("Select an option", "Yes, tell me!", "No, I don't want to know this!"))
 
