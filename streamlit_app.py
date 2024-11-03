@@ -33,5 +33,5 @@ else:
         "<span style='color: red;'>unsafe</span> for you!</h2>",
         unsafe_allow_html=True
     )
-    if st.button("Start again"):
+    if st.button("Let us analyze for you"):
         st.rerun()
