@@ -1,3 +1,4 @@
+import base64
 from io import BytesIO
 import time
 from PIL import Image
@@ -141,10 +142,18 @@ def check_allergies(ingredients_text):
     if allergies:
         with st.spinner('Wait for it...'):
             messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
+            alarm = False
             if messages:
                 for advice in messages:                    
                     obj = parse_ingredient_assessment(advice)
                     if obj:
+                        if alarm == False and obj["safety_status"] == "dangerous":
+                            alarm = True
+                            with open("./static/alert.mp3", "rb") as f:
+                                data = f.read()
+                                audio_base64 = base64.b64encode(data).decode('utf-8')
+                                audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
+                                st.markdown(audio_tag, unsafe_allow_html=True)
                         result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"])
                         message(result, logo=bot_image, allow_html=True)
 
