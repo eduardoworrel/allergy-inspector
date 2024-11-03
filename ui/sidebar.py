@@ -26,8 +26,13 @@ def sidebar_setup():
     st.sidebar.markdown("✅ We are really accurate!*")
     st.sidebar.markdown("✅ We are fun to interact with!")
 
-    # Optional: Add a horizontal line for separation (if needed)
-    # st.sidebar.markdown("---")
+    # Add some space before the fun fact
+    st.sidebar.markdown("")  # Empty line for spacing
+    st.sidebar.markdown("")  # Another empty line for more spacing
+
+    # Adding the fun fact
+    st.sidebar.markdown("**Fun fact***")
+    st.sidebar.markdown("Do you know why we are so accurate? Well, we use the powerful Aria model 💪")
 
     @st.dialog("Setting up")
     def setup():
