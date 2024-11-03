@@ -4,7 +4,7 @@ import streamlit as st
 from utils.session_state import init_session_state
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_infers_allergy_model_response
-
+ 
 is_editing = False
 
 def sidebar_setup():
