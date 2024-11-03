@@ -1,6 +1,16 @@
-Ingredients: {0} \n
-User Allergies: {1} \n
+Ingredients:
+{0}
+User Allergies:
+{1}
 
-compares the recognized ingredients with the user’s allergy profile to assess safety
+Compare the ingredients with the user’s allergy profile. For each ingredient, return an assessment in this format and order them from most dangerous to safest:
+[safety status, ingredient emoji, ingredient name, description]
 
-inform the ingredient emoji, the name, whether it is danger, warning or safe with emojis corresponding to the degree then a brief explanation
+The safety status should be:
+- "dangerous" if the ingredient contains the allergen.
+- "alert" if there's a mild risk or possible cross-contamination.
+- "safe" if there is no allergy risk.
+
+Avoid lengthy explanations and include only essential details about the safety status.
+
+The emoji should represent the ingredient itself (e.g. 🥛 for milk or 🌰 for nuts)

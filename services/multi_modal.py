@@ -2,6 +2,25 @@ from textwrap import dedent
 from openai import OpenAI
 import streamlit as st
 
+def parse_items_from_response(response_generator):
+    item_buffer = ""
+    in_brackets = False
+    
+    # Para cada pedaço de texto retornado
+    for chunk in response_generator:
+        content = chunk.choices[0].delta.content
+        if content:
+            for char in content:
+                if char == '[':
+                    in_brackets = True
+                    item_buffer += char
+                elif char == ']' and in_brackets:
+                    item_buffer += char
+                    in_brackets = False
+                    yield item_buffer 
+                    item_buffer = ""  
+                elif in_brackets:
+                    item_buffer += char
 
 base_url = 'https://api.rhymes.ai/v1'
 
@@ -37,7 +56,7 @@ def get_ingredients_model_response(content):
     )
     yield "We identify:\n"
     for chunk in response:
-        if chunk.choices[0].delta.content is not None:
+        if chunk.choices[0].delta.content is not None: 
             yield chunk.choices[0].delta.content
 
 def get_crossing_data_model_response(ingredients_text, allergies_text):
@@ -61,7 +80,7 @@ def get_crossing_data_model_response(ingredients_text, allergies_text):
         top_p=1,
         stop=["<|im_end|>"]
     )
-    yield "We identify:\n"
-    for chunk in response:
-        if chunk.choices[0].delta.content is not None:
-            yield chunk.choices[0].delta.content
+    return parse_items_from_response(response);
+    # for chunk in response:
+    #     if chunk.choices[0].delta.content is not None:
+    #         yield chunk.choices[0].delta.content
