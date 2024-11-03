@@ -19,9 +19,8 @@ sidebar_setup()
 if st.session_state["allergies_selected"]:
     text = (
         f"Hello {st.session_state['user_name']}. What are you about to eat? "
-        "Is it something you chose... or was it chosen for you? Perhaps there's a "
-        "pattern, a clue hidden in the ingredients, the flavors, the texture that you "
-        "don't know. So, hold on buddy. Let us investigate for you."
+        "Is it something you chose... or was it chosen for you? "
+        "let us investigate for you. "
     )
     message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
    
