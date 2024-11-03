@@ -33,17 +33,15 @@ def sidebar_setup():
     # Adding the fun fact section with a heading
     st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
-    # Adding radio buttons for user options
+    # Adding radio buttons for user options, with no default selected
     option = st.sidebar.radio("Do you want to know why we are so accurate?", 
-                               ("Yes, tell me!", "No, I don't want to know this!"))
+                               ("Select an option", "Yes, tell me!", "No, I don't want to know this!"))
 
     # Display the additional information only if the user clicks "Yes, tell me!"
     if option == "Yes, tell me!":
-        # This block executes only if the user selects "Yes, tell me!"
         st.sidebar.markdown("Well, we use the powerful Aria model 💪.")
         st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
     elif option == "No, I don't want to know this!":
-        # This block executes if the user selects "No, I don't want to know this!"
         st.sidebar.markdown("No issues, your loss :)")
 
     @st.dialog("Setting up")
