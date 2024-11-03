@@ -29,9 +29,9 @@ def sidebar_setup():
     # Directly adding the fun fact section with reduced space
     st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
-    # Adding radio buttons for user options
+    # Adding radio buttons for user options with an exclamation mark emoji
     option = st.sidebar.radio("Do you want to know why we are so accurate?", 
-                               ("Select an option", "Yes, tell me!", "No, I don't want to know this!"))
+                               ("Select an option ❗", "Yes, tell me!", "No, I don't want to know this!"))
 
     # Display the additional information only if the user clicks "Yes, tell me!"
     if option == "Yes, tell me!":
