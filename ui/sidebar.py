@@ -11,10 +11,9 @@ def sidebar_setup():
     init_session_state()
     st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
     
-    @st.dialog("Setting up")
+    @st.dialog("Create your account")
     def setup():
         with st.container():
-            st.write("Prepare your environment")
             # Input para o nome do usuário
             st.session_state["user_name"] = st.text_input(
                 "Enter your name (optional):", 
@@ -23,7 +22,7 @@ def sidebar_setup():
             
             # Input para o avatar do usuário
             avatar = st.file_uploader(
-                "Upload your avatar image (optional):", 
+                "Upload your picture (optional):", 
                 type=["jpg", "jpeg", "png"]
             )
             if avatar:
@@ -48,7 +47,7 @@ def sidebar_setup():
                             st.session_state["user_allergies"] = list(dict.fromkeys(st.session_state["user_allergies"]))
                     else : 
                         st.write("no allergies identified")
-            # Seletor de alergias
+
             user_allergies = st.multiselect(
                 "Select your allergies:", 
                 options=st.session_state["allergy_options"],
@@ -56,7 +55,7 @@ def sidebar_setup():
                 help="Choose from common allergy categories."
             )
             
-            if st.button("Confirm Allergies"):
+            if st.button("Confirm Your Choice"):
                 if user_allergies:
                     st.session_state["allergies_selected"] = True
                     st.session_state["user_allergies"] = user_allergies

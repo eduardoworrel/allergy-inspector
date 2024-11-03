@@ -1,0 +1,13 @@
+Here’s a streamlined prompt designed to make handling as a single string easier:
+
+For the list of food allergies {0} with N symptoms, create a structured string that describes each allergy and its symptoms. For each allergy, start with the allergy name followed by a colon, and list each scene in square brackets to show movement for 5-second video clips.
+
+Format:
+
+	(Allergy Name: [scene1][scene2]...)
+
+Example for peanut allergy:
+
+	(Peanut Allergy: [A person scratching an itchy, red rash on their arms][A person gasping and clutching their throat as they struggle to breathe]),(...)
+
+Output the full string as a single, continuous line, ensuring clarity and structure for each allergy with N scenes.”

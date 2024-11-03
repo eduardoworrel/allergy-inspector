@@ -1,5 +1,4 @@
 import base64
-from io import BytesIO
 import time
 from PIL import Image
 import streamlit as st
@@ -7,7 +6,7 @@ from streamlit_chat import message
 from utils.media_handler import image_to_base64
 from utils.html import generate_alert
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
-
+from services.video_model import generate_videos
 # Constant variables
 unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg"
 bot_image = "https://i.ibb.co/py1Kdv4/image.png"
@@ -153,9 +152,16 @@ def check_allergies(ingredients_text):
                             audio_base64 = base64.b64encode(data).decode('utf-8')
                             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
                             st.markdown(audio_tag, unsafe_allow_html=True)
-                        alarm = True
+                        alarm = True 
                     result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
                     message(result, logo=bot_image, allow_html=True)
 
-                    # container.write("obj.emoji")
-                    # container.write(obj.emoji) 
+              
+            message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=bot_image)
+            with st.spinner('Wait for it...'):
+                message("implementing video")
+                # allergies = ", ".join(allergies) 
+                # values = generate_videos(allergies)
+                # for value in values:
+                #     message(value, logo=bot_image)
+                    # st.video(value[1])
