@@ -21,19 +21,20 @@ def sidebar_setup():
             )
             
             # Input para o avatar do usuário
-            avatar = st.file_uploader(
-                "Upload your picture (optional):", 
-                type=["jpg", "jpeg", "png"]
-            )
-            if avatar:
-                avatar = image_to_base64(avatar.getvalue())
-                base64avatar = f"data:image/png;base64,{avatar}"
-                st.session_state["user_avatar"] = base64avatar
+            # avatar = st.file_uploader(
+            #     "Upload your picture (optional):", 
+            #     type=["jpg", "jpeg", "png"]
+            # )
+            # if avatar:
+            #     avatar = image_to_base64(avatar.getvalue())
+            #     base64avatar = f"data:image/png;base64,{avatar}"
+            #     st.session_state["user_avatar"] = base64avatar
             # Input para a descrição do usuário
             description = st.text_area(
                 "Describe the food that made you sick previously when you ate it (optional):", 
                 value=st.session_state.get("user_description", "")
             )
+
             if description:
                 with st.spinner("processing"):
                     response = "".join(get_infers_allergy_model_response(description))
