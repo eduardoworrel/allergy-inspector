@@ -72,10 +72,6 @@ def sidebar_setup():
                 avatar = image_to_base64(avatar.getvalue())
                 base64avatar = f"data:image/png;base64,{avatar}"
                 st.session_state["user_avatar"] = base64avatar
-            # Input para a descrição do usuário
-            st.session_state["user_description"] = st.text_area(
-                "Describe your food allergies naturally (optional):", 
-                value=st.session_state.get("user_description", "")
             )
             
             # Seletor de alergias
