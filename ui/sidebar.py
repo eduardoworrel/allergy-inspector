@@ -26,7 +26,6 @@ def sidebar_setup():
     # Adding a small space before the next line
     st.sidebar.markdown("")  # This creates a small space
 
-    st.sidebar.markdown("More than a real detective!")
     st.sidebar.markdown("✅ We are fun to interact with!")
 
     @st.dialog("Setting up")
