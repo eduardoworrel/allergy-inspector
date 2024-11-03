@@ -26,7 +26,7 @@ if st.session_state["allergies_selected"]:
         food_safe = True  # Replace with actual logic to determine safety
 
         # Result text, assuming we just want a general message
-        result_text = f"Let's investigate the food you have in mind!"  # You can modify this message
+        result_text = f"Let's investigate the food you want to devour!"  # You can modify this message
 
         # Display result
         st.markdown(result_text, unsafe_allow_html=True)
