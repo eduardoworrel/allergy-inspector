@@ -26,10 +26,7 @@ def sidebar_setup():
     st.sidebar.markdown("✅ We are really accurate!*")
     st.sidebar.markdown("✅ We are fun to interact with!")  # This line now has no additional spacing below it
 
-    # Reduced space before the fun fact section
-    st.sidebar.markdown("")  # Only one empty line for spacing
-
-    # Adding the fun fact section with a heading
+    # Directly adding the fun fact section with reduced space
     st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
     # Adding radio buttons for user options
@@ -46,7 +43,7 @@ def sidebar_setup():
     @st.dialog("Setting up")
     def setup():
         with st.container():
-            st.write("Prepare your enviroment")
+            st.write("Prepare your environment")
             # Input para o nome do usuário
             st.session_state["user_name"] = st.text_input(
                 "Enter your name (optional):", 
