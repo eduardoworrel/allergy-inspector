@@ -28,9 +28,9 @@ if st.session_state["allergies_selected"]:
     media_input()
 else:
     st.markdown(
-        "I am an allergy detective. Ask me whether the food is "
+        "<h2 style='font-weight: bold;'>I am an allergy detective. Ask me whether the food is "
         "<span style='color: green;'>safe</span> or "
-        "<span style='color: red;'>unsafe</span> for you!",
+        "<span style='color: red;'>unsafe</span> for you!</h2>",
         unsafe_allow_html=True
     )
     if st.button("Start again"):
