@@ -58,9 +58,12 @@ def sidebar_setup():
         setup()
     else:
         st.sidebar.markdown("---")
-        st.sidebar.image(st.session_state["user_avatar"],width=120)
+        if st.sidebar.button("✏️ Edit preferences"):
+            setup() 
+        if st.session_state["user_avatar"] != "":
+            st.sidebar.image(st.session_state["user_avatar"],width=120)
+        else:
+            st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg",width=120)
         st.sidebar.markdown("## "+st.session_state["user_name"] or "Guest")
         st.sidebar.markdown("⚠️ :gray["+", ".join(st.session_state.get("user_allergies")) + "]")
-        if st.sidebar.button("Edit"):
-            setup()
 

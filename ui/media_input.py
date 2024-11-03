@@ -1,134 +1,132 @@
 from io import BytesIO
+import time
+from PIL import Image
 import streamlit as st
 from streamlit_chat import message
-from PIL import Image
 from utils.media_handler import image_to_base64
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
+# Constant variables
+unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg"
+bot_image = "https://i.ibb.co/py1Kdv4/image.png"
+
+actual_response = ""
+
 # Function to generate ingredient and allergy labels
 def generate_labels(items, label_type="ingredient"):
-    labels_html = ""
     css_class = "ingredient-label" if label_type == "ingredient" else "allergy-label"
-    for item in items:
-        labels_html += f'<span class="{css_class}">{item}</span>'
+    labels_html = ", ".join(f'<span class="{css_class}">{item} </span>' for item in items)
     return labels_html
 
-# Main media input function
 def media_input():
-    # Set the light mode theme with aesthetics
+    apply_styling() 
+    
+    _,_,_,_,col1, col2, col3 = st.columns(7)
+
+    gallery = col1.button("🖼️ Library", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
+    camera =  col2.button("🤳 Camera", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
+    video =  col3.button("📹 Video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
+    if gallery or st.session_state["selected"] == "image":
+        if(st.session_state["selected"] !=  "image"):
+            st.session_state["selected"] = "image"
+            st.rerun()
+        handle_image_upload()
+    if camera or st.session_state["selected"] == "camera":
+        
+        if(st.session_state["selected"] !=  "camera"):
+            st.session_state["selected"] = "camera"
+            st.rerun()
+        handle_camera_input()
+    if video or st.session_state["selected"] == "video":
+        if(st.session_state["selected"] !=  "video"):
+            st.session_state["selected"] = "video"
+            st.rerun()
+        handle_video_upload()
+
+    
+    handle_text_prompt()
+
+# Function to apply custom styling to Streamlit UI
+def apply_styling():
     st.markdown("""
         <style>
-            .reportview-container {
-                background-color: #f9f9f9;  /* Light background */
-                color: #333333;  /* Dark text color */
-                font-family: Arial, sans-serif;
-            }
-            .stButton>button {
-                color: #fff;
-                background-color: #007BFF;  /* Button color */
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            .stTextInput>div>div>input {
-                color: #333333;
-                background-color: #ffffff;
-            }
+            .reportview-container { background-color: #f9f9f9; color: #333333; font-family: Arial, sans-serif; }
+            .stTextInput>div>div>input { color: #333333; background-color: #ffffff; }
             .ingredient-label, .allergy-label {
-                background-color: #d9d9d9;  /* Ingredient label color */
-                color: #333333;  /* Dark text for labels */
-                padding: 5px 8px;
-                border-radius: 3px;
-                display: inline-block;
-                margin: 0 4px 4px 0;
-                font-weight: bold;
+                background-color: #d9d9d9; color: #333333; padding: 5px 8px; border-radius: 3px;
+                display: inline-block; margin: 0 4px 4px 0; font-weight: bold;
             }
-            .allergy-label {
-                background-color: #ff9999;  /* Allergy label color */
-                color: white;
-            }
-            .ingredient-container {
-                line-height: 1.5;  /* Adjusted line spacing for readability */
-                margin-bottom: 20px;  /* Space between ingredient sections */
-                padding: 15px;  /* Padding inside the container */
-                border: 1px solid #ddd;  /* Border around the ingredient block */
-                border-radius: 5px;  /* Rounded corners */
-                background-color: #ffffff;  /* White background for the block */
-                text-align: left;  /* Left-align text for consistency */
-            }
-            .explanation {
-                font-style: italic;  /* Italic style for explanation */
-                color: #555555;  /* Lighter text for explanation */
-                margin-top: 8px;  /* Space above explanation */
-                line-height: 1.4;  /* Line spacing for explanation */
-            }
+            .allergy-label { background-color: #ff9999; color: white; }
+            .ingredient-container { line-height: 1.5; margin-bottom: 20px; padding: 15px; border: 1px solid #ddd;
+                                    border-radius: 5px; background-color: #ffffff; text-align: left; }
+            .explanation { font-style: italic; color: #555555; margin-top: 8px; line-height: 1.4; }
         </style>
     """, unsafe_allow_html=True)
 
-    file_type = st.radio("Choose the type of media:", ["Image", "Video", "Text", "Camera"])
+def handle_image_upload():
+    selected = "image"
+    uploaded_file = st.file_uploader("Upload an image of the food.", type=["jpg", "jpeg", "png"])
+    if uploaded_file:
+        users_image = image_to_base64(uploaded_file.getvalue())
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message(f'<img width="20%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image)
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message("A picture, cool! Analyzing the evidence...", logo=bot_image)
+        
+        try: 
+            encoded_image = image_to_base64(uploaded_file.getvalue())
+            with st.spinner('Wait for it...'):
+                ingredients_text = "".join(get_ingredients_model_response(encoded_image))
+            bot_display_ingredients(ingredients_text)
+            check_allergies(ingredients_text)
+        except Exception:
+            message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
+ 
 
-    if file_type == "Image":
-        uploaded_file = st.file_uploader("Upload an image of the food", type=["jpg", "jpeg", "png"])
-        if uploaded_file:
-            users_image = image_to_base64(uploaded_file.getvalue())
-            message(f'<img width="100%" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True)
-            message("🕵️ Analyzing the evidence...")
+def handle_video_upload():
 
-            try:
-                #img = Image.open(BytesIO(uploaded_file.getvalue()))
-                #image = img.resize((80, 80), Image.LANCZOS)
-                #output = BytesIO()
-                #image.save(output, format="JPEG", optimize=True, quality=30)
-                #output.seek(0)
-
-                # encoded_image = image_to_base64(output.read())
-                encoded_image = image_to_base64(uploaded_file.getvalue())
-                
-                response_generator = get_ingredients_model_response(encoded_image)
-
-                ingredients_text = "".join(response_generator)
-                message(f"<div class='ingredient-container'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True)
-
-                labels_html = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-                message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html}</div>', is_user=True, allow_html=True)
-
-                response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
-                advice = "".join(response_generator)
-                message(advice)
-
-            except Exception as e:
-                message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
-    elif file_type == "Video":
-        uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
-        if uploaded_file:
-            st.video(uploaded_file)
-            ingredients_text = "Example OCR result text for video."  # Example OCR result text for video simulation
-            get_model_response(ingredients_text)
+    selected = "video"
+    uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
+    if uploaded_file:
+        st.video(uploaded_file)
+        get_model_response("Example OCR result text for video.")  # Placeholder for actual OCR implementation
 
 
-    elif file_type == "Text":
-        ingredients_text = st.text_area("Enter or paste the list of ingredients")
-        if ingredients_text:
-            ingredients_list = ingredients_text.split(",")
-            labels_html = generate_labels(ingredients_list)
-            message(f'<div class="ingredient-container"><strong>🔎 Clues (Ingredients):</strong><br>{labels_html}</div>', allow_html=True)
+def handle_camera_input():
+    selected = "camera"
+    enable = st.checkbox("Enable camera")
+    img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
+    if img_file_buffer:
+        image = Image.open(img_file_buffer)
+        st.image(image, caption="Captured Image", use_column_width=True)
+        get_model_response("Example OCR result text for camera image.")  # Placeholder for actual OCR implementation
 
-            labels_html_allergies = generate_labels(st.session_state.get("user_allergies", []), label_type="allergy")
-            message(f'<div class="ingredient-container">🕵️ Known Allergies: {labels_html_allergies}</div>', is_user=True, allow_html=True)
+def handle_text_prompt():
+    prompt = st.chat_input("food and or known ingredients")
+    if prompt:
+        ingredients_list = prompt.split(",")
+        labels_html = generate_labels(ingredients_list)
+        message(f'<div class="ingredient-container"><strong>🔎 Clues (Food or Ingredients):</strong><br>{labels_html}</div>', allow_html=True, is_user=True, logo=unknow_user_image)
+        check_allergies(", ".join(ingredients_list))
 
-            # Example explanation (customize this part as needed)
-            explanation_text = "These ingredients are commonly found in various dishes. Ensure to check if they trigger any allergies."
-            message(f'<div class="explanation">{explanation_text}</div>', allow_html=True)
+# Helper function to display ingredients
+def bot_display_ingredients(ingredients_text):
+     with st.spinner("..."):
+        time.sleep(0.5)
+        message(f"<div class='ingredient-container'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True, logo=bot_image)
 
-            response_generator = get_crossing_data_model_response(ingredients_text, ",".join(st.session_state.get("user_allergies", [])))
-            advice = "".join(response_generator)
-            message(advice)
-    elif file_type == "Camera":
-        enable = st.checkbox("Enable camera")
-        img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
-        if img_file_buffer:
-            image = Image.open(img_file_buffer)
-            st.image(image, caption="Captured Image", use_column_width=True)
-            ingredients_text = "Example OCR result text for camera image."  # Example OCR result text for camera image simulation
-            get_model_response(ingredients_text)
+# Helper function to check allergies
+def check_allergies(ingredients_text):
+    allergies = st.session_state.get("user_allergies", [])
+    labels_html = generate_labels(allergies, label_type="allergy")
+    message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image)
+    with st.spinner("..."):
+        time.sleep(1.5)
+        message("Cool, let's take that into account.", logo=bot_image)
 
-    # Other file types remain the same...
+    if allergies:
+        with st.spinner('Wait for it...'):
+            advice = "".join(get_crossing_data_model_response(ingredients_text, ", ".join(allergies)))
+            message(advice, logo=bot_image)
