@@ -31,7 +31,7 @@ def sidebar_setup():
             #     st.session_state["user_avatar"] = base64avatar
             # Input para a descrição do usuário
             description = st.text_area(
-                "Describe the food that made you sick previously when you ate it (optional):", 
+                "Describe what made you sick previously when you ate it (optional):", 
                 value=st.session_state.get("user_description", "")
             )
 
