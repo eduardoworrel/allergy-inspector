@@ -1,8 +1,6 @@
 # ui/sidebar.py
 
-from io import BytesIO
 import streamlit as st
-from PIL import Image
 from utils.session_state import init_session_state
 from utils.media_handler import image_to_base64
 
@@ -17,7 +15,7 @@ def sidebar_setup():
     @st.dialog("Setting up")
     def setup():
         with st.container():
-            st.write("Prepare your enviroment")
+            st.write("Prepare your environment")
             # Input para o nome do usuário
             st.session_state["user_name"] = st.text_input(
                 "Enter your name (optional):", 
