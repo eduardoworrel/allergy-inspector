@@ -5,7 +5,23 @@ from utils.session_state import init_session_state
 from utils.media_handler import image_to_base64
 
 # Lista predefinida de categorias de alergias
-allergy_options = ["Nuts", "Dairy", "Gluten", "Seafood", "Soy", "Eggs"]
+# Lista predefinida de categorias de alergias
+allergy_options = [
+    "Milk", 
+    "Eggs", 
+    "Peanuts", 
+    "Tree nuts", 
+    "Fish", 
+    "Shellfish", 
+    "Wheat",
+    "Soy",
+    "Sesame",
+    "Mustard",
+    "Corn",
+    "Celery",
+    "Lupin",
+    "Poppy seeds"
+]
 
 is_editing = False
 
