@@ -16,7 +16,7 @@ def sidebar_setup():
     st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
     
     # Add the new line below the title
-    st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.")
+    st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.*")
 
     # New section for reasons to choose the service
     st.sidebar.markdown("## Why you should choose us?")
