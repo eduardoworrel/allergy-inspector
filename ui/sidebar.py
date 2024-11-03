@@ -24,13 +24,9 @@ def sidebar_setup():
     # Adding the bullet points without extra space
     st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
     st.sidebar.markdown("✅ We are really accurate!*")
-    st.sidebar.markdown("✅ We are fun to interact with!")
+    st.sidebar.markdown("✅ We are fun to interact with!")  # No additional spacing here
 
-    # Add some space before the fun fact
-    st.sidebar.markdown("")  # Empty line for spacing
-    st.sidebar.markdown("")  # Another empty line for more spacing
-
-    # Adding the fun fact section with a heading
+    # Directly following with the fun fact heading
     st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
     # Adding radio buttons for user options
@@ -72,23 +68,4 @@ def sidebar_setup():
             user_allergies = st.multiselect(
                 "Select your allergies:",
                 options=allergy_options,
-                default=st.session_state["user_allergies"],
-                help="Choose from common allergy categories."
-            )
-            
-            if st.button("Confirm Allergies"):
-                if user_allergies:
-                    st.session_state["allergies_selected"] = True
-                    st.session_state["user_allergies"] = user_allergies
-                    st.rerun()
-                else:
-                    st.warning("Please select at least one allergy.")
-    if not st.session_state["allergies_selected"]:
-        setup()
-    else:
-        st.sidebar.markdown("---")
-        st.sidebar.image(st.session_state["user_avatar"], width=120)
-        st.sidebar.markdown("## "+st.session_state["user_name"] or "Guest")
-        st.sidebar.markdown("⚠️ :gray["+", ".join(st.session_state.get("user_allergies")) + "]")
-        if st.sidebar.button("Edit"):
-            setup()
+      
