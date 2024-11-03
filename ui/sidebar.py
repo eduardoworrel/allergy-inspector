@@ -30,15 +30,18 @@ def sidebar_setup():
     st.sidebar.markdown("")  # Empty line for spacing
     st.sidebar.markdown("")  # Another empty line for more spacing
 
-    # Adding the fun fact section
-    st.sidebar.markdown("**Fun fact***")
+    # Adding the fun fact section with a heading
+    st.sidebar.markdown("## Fun fact*")  # Same font size as previous headings
     
-    # Create a button to toggle more information
-    if st.sidebar.button("Do you know why we are so accurate?"):
+    # Adding radio buttons for user options
+    option = st.sidebar.radio("Do you want to know why we are so accurate?", 
+                               ("Yes, tell me!", "No, I don't want to know this!"))
+
+    if option == "Yes, tell me!":
         st.sidebar.markdown("Well, we use the powerful Aria model 💪.")
         st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
-    else:
-        st.sidebar.markdown("Click the button to learn more about our accuracy!")
+    elif option == "No, I don't want to know this!":
+        st.sidebar.markdown("No issues, your loss :)")
 
     @st.dialog("Setting up")
     def setup():
