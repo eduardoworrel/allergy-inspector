@@ -14,6 +14,10 @@ is_editing = False
 def sidebar_setup():
     init_session_state()
     st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
+    
+    # Add the new line below the title
+    st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.")
+
     @st.dialog("Setting up")
     def setup():
         with st.container():
@@ -58,9 +62,8 @@ def sidebar_setup():
         setup()
     else:
         st.sidebar.markdown("---")
-        st.sidebar.image(st.session_state["user_avatar"],width=120)
+        st.sidebar.image(st.session_state["user_avatar"], width=120)
         st.sidebar.markdown("## "+st.session_state["user_name"] or "Guest")
         st.sidebar.markdown("⚠️ :gray["+", ".join(st.session_state.get("user_allergies")) + "]")
         if st.sidebar.button("Edit"):
             setup()
-
