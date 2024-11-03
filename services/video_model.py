@@ -8,7 +8,7 @@ bearer_token = st.secrets["ALLEGRO_API_KEY"]
 def generate_videos(allergies):
 
     prompt = "".join(get_video_instructions_model_response(allergies))
-    allergy_scenes = prompt.split("},")
+    allergy_scenes = prompt.split("),")
     
     url = "https://api.rhymes.ai/v1/generateVideoSyn"
     headers = {
@@ -17,11 +17,12 @@ def generate_videos(allergies):
     }
     
     for scene in allergy_scenes:
+        yield ("message",scene)
         scene = scene.strip("()") + ")" if "()" not in scene else scene
         allergy_type, symptoms = scene.split(":", 1)
         allergy_type = allergy_type.strip()
         refined_prompt = symptoms.strip()
-        yield refined_prompt
+        yield ("message",refined_prompt)
         data = {
             "refined_prompt": refined_prompt,
             "num_step": 5,
@@ -43,9 +44,10 @@ def generate_videos(allergies):
             
             print(f"Vídeo iniciado para alergia '{allergy_type}' com request_id: {request_id}. Aguardando processamento...")
             
-            time.sleep(120)
+            yield ("message", "wait 1 minute")
+            time.sleep(10)
             
-            
+            yield ("message", "getting video status")
             status_url = "https://api.rhymes.ai/v1/videoQuery"
             params = {"requestId": request_id}
              
@@ -54,16 +56,18 @@ def generate_videos(allergies):
                 status_response.raise_for_status()
                 status_data = status_response.json()
                  
-                if status_data.get('status') == 'completed':
+                if status_data.get('status') != 0:
+                    print(status_data)
+                    yield ("message", f"Erro no processamento do vídeo para a alergia '{allergy_type}'.")
+                    break
+                   
+                elif status_data.get('data') == '':
+                    yield ("message", f"Processando alergia '{allergy_type}'... Aguardando mais um tempo.")
+                    time.sleep(5)  
+                else:
                     video_link = status_data.get('data')
                     print(f"Vídeo finalizado para alergia '{allergy_type}'. URL:", video_link)
                     yield (allergy_type, video_link) 
-                    break
-                elif status_data.get('status') == 'processing':
-                    print(f"Processando alergia '{allergy_type}'... Aguardando mais um tempo.")
-                    time.sleep(60)  
-                else:
-                    print(f"Erro no processamento do vídeo para a alergia '{allergy_type}'.")
                     break
 
         except requests.exceptions.RequestException as e:

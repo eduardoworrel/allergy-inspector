@@ -159,9 +159,11 @@ def check_allergies(ingredients_text):
               
             message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=bot_image)
             with st.spinner('Wait for it...'):
-                message("implementing video")
-                # allergies = ", ".join(allergies) 
-                # values = generate_videos(allergies)
-                # for value in values:
-                #     message(value, logo=bot_image)
-                    # st.video(value[1])
+                allergies = ", ".join(allergies) 
+                values = generate_videos(allergies)
+                for value in values:
+                    if(value[0] == "message"):
+                        message(value[1], logo=bot_image)
+                    else:
+                        st.video(value[1])
+                        message(value[0], logo=bot_image)

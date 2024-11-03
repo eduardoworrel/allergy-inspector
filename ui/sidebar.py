@@ -31,11 +31,10 @@ def sidebar_setup():
                 st.session_state["user_avatar"] = base64avatar
             # Input para a descrição do usuário
             description = st.text_area(
-                "Describe your food allergies naturally (optional):", 
+                "Describe the food that made you sick when you ate it (optional):", 
                 value=st.session_state.get("user_description", "")
             )
-            process = st.button("Find out")
-            if process and description:
+            if description:
                 with st.spinner("processing"):
                     response = "".join(get_infers_allergy_model_response(description))
                     if response != "[noone]":
