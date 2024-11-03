@@ -54,7 +54,7 @@ def sidebar_setup():
     @st.dialog("Create your account")
     def setup():
         with st.container():
-            st.write("Prepare your environment")
+           
             # Input para o nome do usuário
             st.session_state["user_name"] = st.text_input(
                 "Enter your name (optional):", 
