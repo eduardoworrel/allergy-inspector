@@ -7,8 +7,7 @@ from utils.media_handler import image_to_base64
 # Lista predefinida de categorias de alergias
 # Lista predefinida de categorias de alergias
 allergy_options = [
-    "Milk", 
-    "Eggs", 
+    "Dairy",
     "Peanuts", 
     "Tree nuts", 
     "Fish",
