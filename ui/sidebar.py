@@ -20,13 +20,14 @@ def sidebar_setup():
 
     # New section for reasons to choose the service
     st.sidebar.markdown("## Why you should choose us?")
-    st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
-    st.sidebar.markdown("✅ We are really accurate!")
     
-    # Adding a small space before the next line
-    st.sidebar.markdown("")  # This creates a small space
-
+    # Adding the bullet points with equal space
+    st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
+    st.sidebar.markdown("")  # Empty line for spacing
+    st.sidebar.markdown("✅ We are really accurate!")
+    st.sidebar.markdown("")  # Empty line for spacing
     st.sidebar.markdown("✅ We are fun to interact with!")
+    st.sidebar.markdown("")  # Empty line for spacing
 
     @st.dialog("Setting up")
     def setup():
