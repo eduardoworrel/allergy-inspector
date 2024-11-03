@@ -18,6 +18,17 @@ def sidebar_setup():
     # Add the new line below the title
     st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.")
 
+    # New section for reasons to choose the service
+    st.sidebar.markdown("## Why you should choose us?")
+    st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
+    st.sidebar.markdown("✅ We are really accurate!")
+    
+    # Adding a small space before the next line
+    st.sidebar.markdown("")  # This creates a small space
+
+    st.sidebar.markdown("More than a real detective!")
+    st.sidebar.markdown("✅ We are fun to interact with!")
+
     @st.dialog("Setting up")
     def setup():
         with st.container():
@@ -33,7 +44,7 @@ def sidebar_setup():
                 "Upload your avatar image (optional):", 
                 type=["jpg", "jpeg", "png"]
             )
-            if avatar :
+            if avatar:
                 avatar = image_to_base64(avatar.getvalue())
                 base64avatar = f"data:image/png;base64,{avatar}"
                 st.session_state["user_avatar"] = base64avatar
