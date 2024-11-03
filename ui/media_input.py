@@ -24,7 +24,6 @@ def parse_ingredient_assessment(assessment):
             "description": elements[3]
         }
     except:
-        st.write(assessment)
         return None
 
 def generate_labels(items, label_type="ingredient"):
