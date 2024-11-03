@@ -144,8 +144,7 @@ def check_allergies(ingredients_text):
         with st.spinner('Wait for it...'):
             messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
             alarm = False
-            for advice in messages:        
-                message(advice)
+            for advice in messages:  
                 obj = parse_ingredient_assessment(advice)
                 if obj:
                     if alarm == False and obj["safety_status"] == "dangerous":
@@ -155,7 +154,7 @@ def check_allergies(ingredients_text):
                             audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
                             st.markdown(audio_tag, unsafe_allow_html=True)
                         alarm = True
-                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"])
+                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
                     message(result, logo=bot_image, allow_html=True)
 
                     # container.write("obj.emoji")
