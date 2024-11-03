@@ -60,10 +60,9 @@ def get_ingredients_model_response(content):
             yield chunk.choices[0].delta.content
 
 def get_crossing_data_model_response(ingredients_text, allergies_text):
-
+ 
     prompt_text = load_prompt('prompts/crossing_prompt.txt')
     prompt_text = prompt_text.format(ingredients_text, allergies_text)
-    print (prompt_text)
     response = client.chat.completions.create(
         model="aria",
         messages=[
@@ -80,7 +79,52 @@ def get_crossing_data_model_response(ingredients_text, allergies_text):
         top_p=1,
         stop=["<|im_end|>"]
     )
-    return parse_items_from_response(response);
-    # for chunk in response:
-    #     if chunk.choices[0].delta.content is not None:
-    #         yield chunk.choices[0].delta.content
+    return parse_items_from_response(response)
+
+def get_infers_allergy_model_response(description):
+
+    prompt_text = load_prompt('prompts/infers_allergy_prompt.txt')
+    prompt_text = prompt_text.format(description)
+    response = client.chat.completions.create(
+        model="aria",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt_text}
+                ]
+            }
+        ],
+        stream=True,
+        temperature=0.1,
+        max_tokens=1024,
+        top_p=1,
+        stop=["<|im_end|>"]
+    )
+    for chunk in response:
+        if chunk.choices[0].delta.content is not None: 
+            yield chunk.choices[0].delta.content
+
+def get_video_instructions_model_response(description):
+
+    prompt_text = load_prompt('prompts/prepare_video_prompt.txt')
+    prompt_text = prompt_text.format(description)
+    response = client.chat.completions.create(
+        model="aria",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt_text}
+                ]
+            }
+        ],
+        stream=True,
+        temperature=0.1,
+        max_tokens=1024,
+        top_p=1,
+        stop=["<|im_end|>"]
+    )
+    for chunk in response:
+        if chunk.choices[0].delta.content is not None: 
+            yield chunk.choices[0].delta.content
