@@ -51,7 +51,7 @@ def sidebar_setup():
     elif option == "No, I don't want to know this!":
         st.sidebar.markdown("No issues, your loss :)")
 
-    @st.dialog("Setting up")
+    @st.dialog("Create your account")
     def setup():
         with st.container():
             st.write("Prepare your environment")
