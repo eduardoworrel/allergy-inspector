@@ -23,7 +23,7 @@ def sidebar_setup():
     
     # Adding the bullet points without extra space
     st.sidebar.markdown("✅ We don't ask you for any fee. You can use us freely anytime!")
-    st.sidebar.markdown("✅ We are really accurate!")
+    st.sidebar.markdown("✅ We are really accurate!*")
     st.sidebar.markdown("✅ We are fun to interact with!")
 
     # Optional: Add a horizontal line for separation (if needed)
