@@ -20,7 +20,7 @@ if st.session_state["allergies_selected"]:
     text = (
         f"Hello {st.session_state['user_name']}. What are you about to eat? "
         "Is it something you chose... or was it chosen for you? "
-        "let us investigate for you. "
+        "Let us investigate for you. "
     )
     message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
    
