@@ -22,7 +22,7 @@ if st.session_state["allergies_selected"]:
    
     media_input()
 else:
-    st.markdown("# Please select your allergies.")
+    st.markdown("# Hey buddy! I am an allergy detective (yeah, that's my name). Let me tell you the food that you are about to eat is safe or unsafe for you!")
     if st.button("Start again"):
         st.rerun()
 
