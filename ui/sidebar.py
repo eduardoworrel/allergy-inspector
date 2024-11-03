@@ -16,7 +16,7 @@ def sidebar_setup():
     st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
     
     # Add the new line below the title
-    st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.*")
+    st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.")
 
     # New section for reasons to choose the service
     st.sidebar.markdown("## Why you should choose us?")
@@ -37,6 +37,7 @@ def sidebar_setup():
     option = st.sidebar.radio("Do you want to know why we are so accurate?", 
                                ("Yes, tell me!", "No, I don't want to know this!"))
 
+    # Display the additional information only if the user clicks "Yes, tell me!"
     if option == "Yes, tell me!":
         st.sidebar.markdown("Well, we use the powerful Aria model 💪.")
         st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
