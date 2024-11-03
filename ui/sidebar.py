@@ -79,7 +79,7 @@ def sidebar_setup():
                 help="Choose from common allergy categories."
             )
             
-            if st.button("Confirm Allergies"):
+            if st.button("Confirm Your Choice"):
                 if user_allergies:
                     st.session_state["allergies_selected"] = True
                     st.session_state["user_allergies"] = user_allergies
