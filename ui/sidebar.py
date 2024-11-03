@@ -58,7 +58,7 @@ def sidebar_setup():
         setup()
     else:
         st.sidebar.markdown("---")
-        if st.sidebar.button("✏️ Edit preferences"):
+        if st.sidebar.button("Edit preferences"):
             setup() 
         if st.session_state["user_avatar"] != "":
             st.sidebar.image(st.session_state["user_avatar"],width=120)

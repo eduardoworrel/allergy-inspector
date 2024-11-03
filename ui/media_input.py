@@ -4,6 +4,7 @@ from PIL import Image
 import streamlit as st
 from streamlit_chat import message
 from utils.media_handler import image_to_base64
+from utils.html import generate_alert
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 
 # Constant variables
@@ -12,12 +13,25 @@ bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 
 actual_response = ""
 
-# Function to generate ingredient and allergy labels
+def parse_ingredient_assessment(assessment):
+    try:
+        elements = assessment.strip("[]").split(", ")
+        
+        return {
+            "safety_status": elements[0],
+            "emoji": elements[1],
+            "ingredient_name": elements[2],
+            "description": elements[3]
+        }
+    except:
+        st.write(assessment)
+        return None
+
 def generate_labels(items, label_type="ingredient"):
     css_class = "ingredient-label" if label_type == "ingredient" else "allergy-label"
     labels_html = ", ".join(f'<span class="{css_class}">{item} </span>' for item in items)
     return labels_html
-
+ 
 def media_input():
     apply_styling() 
     
@@ -75,14 +89,15 @@ def handle_image_upload():
             time.sleep(0.5)
             message("A picture, cool! Analyzing the evidence...", logo=bot_image)
         
-        try: 
-            encoded_image = image_to_base64(uploaded_file.getvalue())
-            with st.spinner('Wait for it...'):
-                ingredients_text = "".join(get_ingredients_model_response(encoded_image))
-            bot_display_ingredients(ingredients_text)
-            check_allergies(ingredients_text)
-        except Exception:
-            message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
+        # try: 
+        encoded_image = image_to_base64(uploaded_file.getvalue())
+        with st.spinner('Wait for it...'):
+            ingredients_text = "".join(get_ingredients_model_response(encoded_image))
+        bot_display_ingredients(ingredients_text)
+        check_allergies(ingredients_text)
+            
+        # except Exception:
+        #     message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
  
 
 def handle_video_upload():
@@ -117,16 +132,22 @@ def bot_display_ingredients(ingredients_text):
         time.sleep(0.5)
         message(f"<div class='ingredient-container'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True, logo=bot_image)
 
-# Helper function to check allergies
+# Helper function to check allergies 
 def check_allergies(ingredients_text):
     allergies = st.session_state.get("user_allergies", [])
     labels_html = generate_labels(allergies, label_type="allergy")
     message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image)
-    with st.spinner("..."):
-        time.sleep(1.5)
-        message("Cool, let's take that into account.", logo=bot_image)
+    message("Cool, let's take that into account.", logo=bot_image)
 
     if allergies:
         with st.spinner('Wait for it...'):
-            advice = "".join(get_crossing_data_model_response(ingredients_text, ", ".join(allergies)))
-            message(advice, logo=bot_image)
+            messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
+            if messages:
+                for advice in messages:                    
+                    obj = parse_ingredient_assessment(advice)
+                    if obj:
+                        result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"])
+                        message(result, logo=bot_image, allow_html=True)
+
+                    # container.write("obj.emoji")
+                    # container.write(obj.emoji) 
