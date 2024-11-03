@@ -10,6 +10,10 @@ st.html(
             div[aria-label="dialog"]>button[aria-label="Close"] {
                 display: none;
             }
+            .typewriter {
+                font-family: 'Courier New', Courier, monospace;  /* Typewriter font */
+                white-space: pre;  /* Preserve whitespace */
+            }
         </style>
     '''
 )
@@ -18,7 +22,7 @@ sidebar_setup()
 
 if st.session_state["allergies_selected"]:
     text = f"Hello {st.session_state['user_name']}. I'm your allergy detective! What are you about to eat? Is it a meal you chose... or was it mysteriously chosen for you? Let's uncover the clues hidden in the ingredients, flavors, and textures. Stay sharp, my friend! Together, we will determine if it's safe or unsafe for you!"
-    message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
+    message(f"<span class='typewriter'>{text}</span>", logo="https://i.ibb.co/py1Kdv4/image.png")
    
     # Interactive input for food description
     user_food_input = st.text_input("Describe the food you’re investigating:")
@@ -40,7 +44,7 @@ if st.session_state["allergies_selected"]:
         else:
             st.warning("Please describe the food you're investigating.")
 else:
-    st.markdown("# Hey buddy! I am an allergy detective (yeah, that's my name). Let me tell you the food that you are about to eat is <span style='color:green'>safe</span> or <span style='color:red'>unsafe</span>!", unsafe_allow_html=True)
+    st.markdown("# <span class='typewriter'>Hey buddy! I am an allergy detective (yeah, that's my name). Let me tell you the food that you are about to eat is <span style='color:green'>safe</span> or <span style='color:red'>unsafe</span>!</span>", unsafe_allow_html=True)
     
     if st.button("Give us the evidence"):
         st.rerun()
