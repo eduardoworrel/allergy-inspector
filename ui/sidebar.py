@@ -30,9 +30,15 @@ def sidebar_setup():
     st.sidebar.markdown("")  # Empty line for spacing
     st.sidebar.markdown("")  # Another empty line for more spacing
 
-    # Adding the fun fact
+    # Adding the fun fact section
     st.sidebar.markdown("**Fun fact***")
-    st.sidebar.markdown("Do you know why we are so accurate? Well, we use the powerful Aria model 💪")
+    
+    # Create a button to toggle more information
+    if st.sidebar.button("Do you know why we are so accurate?"):
+        st.sidebar.markdown("Well, we use the powerful Aria model 💪.")
+        st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
+    else:
+        st.sidebar.markdown("Click the button to learn more about our accuracy!")
 
     @st.dialog("Setting up")
     def setup():
