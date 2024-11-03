@@ -12,6 +12,7 @@ is_editing = False
 def sidebar_setup():
     init_session_state()
     st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
+
     st.sidebar.markdown("We are one of the famous allergy detectors that keep people from getting sick.")
 
     # New section for reasons to choose the service
@@ -27,7 +28,8 @@ def sidebar_setup():
 
     # Adding radio buttons for user options with an exclamation mark emoji
     option = st.sidebar.radio("Do you want to know why we are so accurate?", 
-                                ("Select an option ❗", "Yes, tell me!", "No, I don't want to know this!"))
+                               ("Select an option ❗", "Yes, tell me!", "No, I don't want to know this!"))
+
 
     # Display the additional information only if the user clicks "Yes, tell me!"
     if option == "Yes, tell me!":
@@ -35,6 +37,7 @@ def sidebar_setup():
         st.sidebar.markdown("The Aria model helps us analyze ingredients efficiently, providing you with accurate allergy information in real-time!")
     elif option == "No, I don't want to know this!":
         st.sidebar.markdown("No issues, your loss :)")
+
     @st.dialog("Setting up")
     def setup():
         with st.container():
@@ -50,7 +53,7 @@ def sidebar_setup():
                 "Upload your avatar image (optional):", 
                 type=["jpg", "jpeg", "png"]
             )
-            if avatar :
+            if avatar:
                 avatar = image_to_base64(avatar.getvalue())
                 base64avatar = f"data:image/png;base64,{avatar}"
                 st.session_state["user_avatar"] = base64avatar
