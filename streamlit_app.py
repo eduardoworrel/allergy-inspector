@@ -25,7 +25,8 @@ if st.session_state["allergies_selected"]:
         # Placeholder logic for food safety (replace with actual check)
         food_safe = True  # Replace with actual logic to determine safety
 
-     
+        # Result text, assuming we just want a general message
+        result_text = f"Let's investigate the food you have in mind!"  # You can modify this message
 
         # Display result
         st.markdown(result_text, unsafe_allow_html=True)
