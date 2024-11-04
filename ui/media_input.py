@@ -1,3 +1,4 @@
+
 import base64
 import time
 from PIL import Image
@@ -7,6 +8,7 @@ from utils.media_handler import image_to_base64
 from utils.html import generate_alert
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 from services.video_model import generate_videos
+
 unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg"
 bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 doctor_image = "https://i.ibb.co/6HMSRys/2.png"
@@ -37,23 +39,27 @@ def generate_labels(items, label_type="ingredient"):
 def media_input():
     apply_styling() 
     
-    _,col1, col2, col3 = st.columns(4)
+    _, col1, col2, col3 = st.columns(4)
 
-    gallery = col1.button("🖼️ Upload a picture", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
-    # camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
-    # video =  col3.button("📹 Add the video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
-    if gallery or st.session_state["selected"] == "image":
-        if(st.session_state["selected"] !=  "image"):
+    gallery = col1.button("🖼️ Upload a picture", type= "primary" if st.session_state.get("selected") == "image" else "secondary")
+    camera = col2.button("🤳 Take a picture", type= "primary" if st.session_state.get("selected") == "camera" else "secondary")
+    # video = col3.button("📹 Add a video", type= "primary" if st.session_state.get("selected") == "video" else "secondary")
+
+    if gallery or st.session_state.get("selected") == "image":
+        if st.session_state.get("selected") != "image":
             st.session_state["selected"] = "image"
             st.rerun() 
         handle_image_upload()
-    # if camera or st.session_state["selected"] == "camera":
-    #     if(st.session_state["selected"] !=  "camera"):
-    #         st.session_state["selected"] = "camera"
-    #         st.rerun()
-    #     handle_camera_input()
-    # if video or st.session_state["selected"] == "video":
-    #     if(st.session_state["selected"] !=  "video"):
+
+    if camera or st.session_state.get("selected") == "camera":
+        if st.session_state.get("selected") != "camera":
+            st.session_state["selected"] = "camera"
+            st.rerun()
+        handle_camera_input()
+        
+    # Uncomment if video upload is needed
+    # if video or st.session_state.get("selected") == "video":
+    #     if st.session_state.get("selected") != "video":
     #         st.session_state["selected"] = "video"
     #         st.rerun()
     #     handle_video_upload()
@@ -88,32 +94,30 @@ def handle_image_upload():
             time.sleep(0.5)
             message("A picture, cool! Analyzing the evidence...", logo=bot_image)
         
-        # try: 
         encoded_image = image_to_base64(uploaded_file.getvalue())
         with st.spinner('Wait for it...'):
             ingredients_text = "".join(get_ingredients_model_response(encoded_image))
         bot_display_ingredients(ingredients_text)
         check_allergies(ingredients_text)
-            
-        # except Exception:
-        #     message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
-    # for video in st.session_state['videos']:
-        
-
-def handle_video_upload():
-    uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
-    if uploaded_file:
-        st.video(uploaded_file)
-        get_model_response("Example OCR result text for video.")  # Placeholder for actual OCR implementation
-
 
 def handle_camera_input():
     enable = st.checkbox("Enable camera")
     img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
     if img_file_buffer:
-        image = Image.open(img_file_buffer)
-        st.image(image, caption="Captured Image", use_column_width=True)
-        get_model_response("Example OCR result text for camera image.")  # Placeholder for actual OCR implementation
+        image_data = img_file_buffer.getvalue()
+        users_image = image_to_base64(image_data)
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message(f'<img width="40%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image)
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message("Analyzing the captured picture...", logo=bot_image)
+
+        encoded_image = image_to_base64(image_data)
+        with st.spinner('Wait for it...'):
+            ingredients_text = "".join(get_ingredients_model_response(encoded_image))
+        bot_display_ingredients(ingredients_text)
+        check_allergies(ingredients_text)
 
 def handle_text_prompt():
     prompt = st.chat_input("food and or known ingredients")
@@ -125,20 +129,18 @@ def handle_text_prompt():
 
 # Helper function to display ingredients
 def bot_display_ingredients(ingredients_text):
-     with st.spinner("..."):
+    with st.spinner("..."):
         time.sleep(0.5)
         message(f"<div class='ingredient-container'><strong>🔎 Clues (Ingredients):</strong><br>{ingredients_text}</div>", allow_html=True, logo=bot_image)
 
 # Helper function to check allergies 
 def check_allergies(ingredients_text):
-
     allergies = st.session_state.get("user_allergies", [])
     labels_html = generate_labels(allergies, label_type="allergy")
     message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image)
     message("Cool, let's take that into account.", logo=bot_image)
 
     if allergies:
-    
         messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
         alarm = False
         for advice in messages:  
@@ -149,16 +151,9 @@ def check_allergies(ingredients_text):
                         data = f.read()
                         audio_base64 = base64.b64encode(data).decode('utf-8')
                         audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-                        # st.markdown(audio_tag, unsafe_allow_html=True)
                     alarm = True 
                 result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
                 message(result, logo=bot_image, allow_html=True)
 
-              
-        message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=doctor_image)
-    
-        allergies = ", ".join(allergies) 
-        print(allergies)
-        generate_videos(allergies)
-
-                        
+        message("Learn more about your allergies; we are preparing a video. This may take a while.", logo=doctor_image)
+        generate_videos(", ".join(allergies))
