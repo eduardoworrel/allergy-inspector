@@ -9,7 +9,7 @@ is_editing = False
 
 def sidebar_setup():
     init_session_state()
-    st.sidebar.markdown("# Allergy inspector 🕵️‍♀️")
+    st.sidebar.markdown("# Allergy Detector 🕵️‍♀️")
     
     @st.dialog("Create your account")
     def setup():
