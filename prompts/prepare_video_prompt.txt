@@ -1,6 +1,6 @@
 For the list of food allergies {0} with N symptoms, create a structured string that describes each allergy and its symptoms. 
 For each allergy, start with the allergy name followed by a colon, and list each scene in square brackets to show movement for 5-second video clips.
-Focusing on clear, specific descriptions suitable for animation without unnecessary details.
+Each symptom description should be vivid, clear, and include medical and preventive elements, ensuring that the symptom is fully and effectively portrayed in a way that informs and educates viewers about prevention without unnecessary or distressing details.
 
 Format:
 
@@ -8,6 +8,6 @@ Format:
 
 Example for peanut allergy:
 
-	(Peanut Allergy: [A person scratching an itchy, red rash on their arms][A person gasping and clutching their throat as they struggle to breathe]),(...)
+	(Peanut Allergy: [the person has swelling in the mouth and throat, occasionally putting their hand to their throat][Nausea, vomiting, abdominal pain and diarrhea may occur shortly after consumption and the person may occasionally touch their stomach.]),(...)
 
 Output the full string as a single, continuous line, ensuring clarity and structure for each allergy with N scenes.

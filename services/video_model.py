@@ -38,7 +38,7 @@ def generate_videos(allergies):
                     refined_prompt = scene
                     data = {
                         "refined_prompt": refined_prompt,
-                        "num_step": 50,
+                        "num_step": 100,
                         "cfg_scale": 7.5,
                         "user_prompt": refined_prompt,
                         "rand_seed": 12345
