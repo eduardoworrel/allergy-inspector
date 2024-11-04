@@ -155,18 +155,20 @@ def check_allergies(ingredients_text):
         for advice in messages:  
             if not first:
                 first = True
-                
-            obj = parse_ingredient_assessment(advice)
-            if obj:
-                if alarm == False and obj["safety_status"] == "dangerous":
-                    with open("./static/alert.mp3", "rb") as f:
-                        data = f.read()
-                        audio_base64 = base64.b64encode(data).decode('utf-8')
-                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-                        # st.markdown(audio_tag, unsafe_allow_html=True)
-                    alarm = True 
-                result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
-                message(result, logo=bot_image, allow_html=True, key=f'msg_{time.time()}')
+                message("Here are some things to watch out for.", logo=bot_image)
+            with st.spinner("loading.."):  
+                time.sleep(1)
+                obj = parse_ingredient_assessment(advice)
+                if obj:
+                    if alarm == False and obj["safety_status"] == "dangerous":
+                        with open("./static/alert.mp3", "rb") as f:
+                            data = f.read()
+                            audio_base64 = base64.b64encode(data).decode('utf-8')
+                            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
+                            # st.markdown(audio_tag, unsafe_allow_html=True)
+                        alarm = True 
+                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
+                    message(result, logo=bot_image, allow_html=True, key=f'msg_{time.time()}')
  
               
         message("Learn more about your allergies, we are preparing videos and information about the symptoms of your allergies. this may take a while.", logo=doctor_image)

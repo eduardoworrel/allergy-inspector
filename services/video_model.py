@@ -54,7 +54,17 @@ def generate_videos(allergies):
                 
                 if not request_id:
                     print(f"Erro: request_id não retornado para a alergia '{title}'.")
-                    continue
+                    message("Service failed to respond, trying again", logo=doctor_image, key=f'mgs_{{time.time()}}')
+                    time.sleep(3)
+                    response = requests.post(url, headers=headers, json=data)
+                    response.raise_for_status()
+                    response_data = response.json()
+                    request_id = response_data.get('data')
+                    if not request_id:
+                        message("Unfortunately we were unable to contact the server, please try again soon", logo=doctor_image, key=f'mgs_{{time.time()}}')
+                        if st.sidebar.button("Try Again"):
+                            st.rerun() 
+                        continue
                 
                 time.sleep(10)
                 
