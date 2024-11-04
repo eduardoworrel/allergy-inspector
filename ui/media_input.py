@@ -11,10 +11,6 @@ unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/U
 bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 doctor_image = "https://i.ibb.co/6HMSRys/2.png"
 
-if 'message_key' not in st.session_state:
-    st.session_state['message_key'] = 1
-if 'videos' not in st.session_state:
-    st.session_state['videos'] = []
 
 actual_response = ""
 
