@@ -39,7 +39,7 @@ def generate_videos(allergies):
 
             scene =scenes[0]
             description =scenes[1]
-            
+
             with st.spinner(f'generating video for allergy symptoms to {title} ...'):
                 refined_prompt = scene
                 data = {
@@ -63,7 +63,7 @@ def generate_videos(allergies):
                     response_data = response.json()
                     request_id = response_data.get('data')
                     if not request_id:
-                        message("Unfortunately we were unable to contact the server, please try again soon", logo=doctor_image, key=f'mgs_{{time.time()}}')
+                        message("Unfortunately we were unable to contact the server, please try again soon", logo=doctor_image, key=f'error_mgs_{{time.time()}}')
                         if st.sidebar.button("Try Again"):
                             st.rerun() 
                         continue
