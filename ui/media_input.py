@@ -41,18 +41,20 @@ def media_input():
     _,col1, col2, col3 = st.columns(4)
 
     gallery = col1.button("🖼️ Upload a picture", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
-    # camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
+
+    camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
     # video =  col3.button("📹 Add the video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
     if gallery or st.session_state["selected"] == "image":
         if(st.session_state["selected"] !=  "image"):
             st.session_state["selected"] = "image"
             st.rerun() 
         handle_image_upload()
-    # if camera or st.session_state["selected"] == "camera":
-    #     if(st.session_state["selected"] !=  "camera"):
-    #         st.session_state["selected"] = "camera"
-    #         st.rerun()
-    #     handle_camera_input()
+    
+    if camera or st.session_state["selected"] == "camera":
+         if(st.session_state["selected"] !=  "camera"):
+             st.session_state["selected"] = "camera"
+             st.rerun()
+         handle_camera_input()
     # if video or st.session_state["selected"] == "video":
     #     if(st.session_state["selected"] !=  "video"):
     #         st.session_state["selected"] = "video"
@@ -84,10 +86,10 @@ def handle_image_upload():
         users_image = image_to_base64(uploaded_file.getvalue())
         with st.spinner("..."):
             time.sleep(0.5)
-            message(f'<img width="40%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image)
+            message(f'<img width="40%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image, key=f"user_image_{time.time()}")
         with st.spinner("..."):
             time.sleep(0.5)
-            message("A picture, cool! Analyzing the evidence...", logo=bot_image)
+            message("A picture, cool! Analyzing the evidence...", logo=bot_image, key=f"bot_image_{time.time()}")
         
         # try: 
         encoded_image = image_to_base64(uploaded_file.getvalue())
@@ -112,9 +114,18 @@ def handle_camera_input():
     enable = st.checkbox("Enable camera")
     img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
     if img_file_buffer:
-        image = Image.open(img_file_buffer)
-        st.image(image, caption="Captured Image", use_column_width=True)
-        get_model_response("Example OCR result text for camera image.")  # Placeholder for actual OCR implementation
+        image_data = img_file_buffer.getvalue()
+        users_image = image_to_base64(image_data)
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message(f'<img width="40%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image, key=f"user_camera_{time.time()}")
+        with st.spinner("..."):
+            time.sleep(0.5)
+            message("Analyzing the captured picture...", logo=bot_image, key=f"bot_camera_{time.time()}")
+        with st.spinner('Wait for it...'):
+            ingredients_text = "".join(get_ingredients_model_response(users_image))
+        bot_display_ingredients(ingredients_text)
+        check_allergies(ingredients_text)
 
 def handle_text_prompt():
     prompt = st.chat_input("food and or known ingredients")
