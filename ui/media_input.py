@@ -158,12 +158,5 @@ def check_allergies(ingredients_text):
                     result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
                     message(result, logo=bot_image, allow_html=True)
 
-           message("Learn more about your allergies, we are preparing a video. This may take a while.", logo=bot_image)
-           with st.spinner('Generating your video...'):
-    # allergies = ", ".join(allergies) 
-    # values = generate_videos(allergies)
-    
-    # Uncomment and implement your video generation logic here
-    # for value in values:
-    #     message(value, logo=bot_image)
-    #     st.video(value[1])  # Display the generated video
+            message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=bot_image)
+            with st.spinner('Wait for it...'):
