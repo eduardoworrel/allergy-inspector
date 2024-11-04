@@ -151,7 +151,11 @@ def check_allergies(ingredients_text):
         with st.spinner("loading.."):
             messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
             alarm = False
+        first = False
         for advice in messages:  
+            if not first:
+                first = True
+                
             obj = parse_ingredient_assessment(advice)
             if obj:
                 if alarm == False and obj["safety_status"] == "dangerous":
@@ -162,7 +166,7 @@ def check_allergies(ingredients_text):
                         # st.markdown(audio_tag, unsafe_allow_html=True)
                     alarm = True 
                 result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
-                message(result, logo=bot_image, allow_html=True, key=f'msg_{st.session_state["message_key"]}')
+                message(result, logo=bot_image, allow_html=True, key=f'msg_{time.time()}')
                 st.session_state["message_key"] += 1
  
               
