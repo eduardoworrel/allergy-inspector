@@ -34,10 +34,12 @@ def generate_videos(allergies):
             scenes_str = ':'.join(title_and_scenes[1:])  
             print("----scenes_str: "+ scenes_str)
             scenes = re.findall(r'\[(.*?)\]', scenes_str)
+            if(len(scenes) != 2):
+                continue
+
             scene =scenes[0]
             description =scenes[1]
-            print("----scenes: "+ scenes[0])
-            print("----description: "+ scenes[1])
+            
             with st.spinner(f'generating video for allergy symptoms to {title} ...'):
                 refined_prompt = scene
                 data = {
