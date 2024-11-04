@@ -8,7 +8,7 @@ bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 doctor_image = "https://i.ibb.co/6HMSRys/2.png"
 
 bearer_token = st.secrets["ALLEGRO_API_KEY"]
-st.session_state["video_key"] = 1
+
 def generate_videos(allergies):
 
     allergy_list = []
@@ -75,9 +75,8 @@ def generate_videos(allergies):
                     else: 
                         video_link = status_data.get('data')
                         print(f"Vídeo finalizado para alergia '{title}'. URL:", video_link)
-                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs_{st.session_state["video_key"]}')
+                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs_{{time.time()}}')
                         st.video(video_link)
-                        st.session_state["video_key"] += 1
                         finish = True
                 time.sleep(1)
         except requests.exceptions.RequestException as e:

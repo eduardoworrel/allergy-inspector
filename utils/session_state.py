@@ -18,6 +18,4 @@ def init_session_state():
             "Sulfites", "Legumes", "Nightshades", "Chocolate",
             "Alcohol", "Caffeine", "Pork", "Red Meat", "Garlic", "Onion", "Spices", "Lupin","Poppy seeds"
         ]
-        
-        st.session_state['message_key'] = 1
         st.session_state['videos'] = []
