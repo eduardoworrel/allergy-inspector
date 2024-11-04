@@ -167,7 +167,7 @@ def check_allergies(ingredients_text):
                 result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
                 message(result, logo=bot_image, allow_html=True, key=f'msg_{st.session_state["message_key"]}')
                 st.session_state["message_key"] += 1
-
+ 
               
         message("Learn more about your allergies, we are preparing videos and information about the symptoms of your allergies. this may take a while.", logo=doctor_image)
     
