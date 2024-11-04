@@ -7,9 +7,12 @@ from utils.media_handler import image_to_base64
 from utils.html import generate_alert
 from services.multi_modal import get_crossing_data_model_response, get_ingredients_model_response
 from services.video_model import generate_videos
-# Constant variables
 unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/434px-Unknown_person.jpg"
 bot_image = "https://i.ibb.co/py1Kdv4/image.png"
+doctor_image = "https://i.ibb.co/6HMSRys/2.png"
+
+if 'videos' not in st.session_state:
+    st.session_state['videos'] = []
 
 actual_response = ""
 
@@ -38,7 +41,7 @@ def media_input():
 
     gallery = col1.button("🖼️ Upload a picture", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
     camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
-    video =  col3.button("📹 Add the video of food", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
+    video =  col3.button("📹 Add the video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
     if gallery or st.session_state["selected"] == "image":
         if(st.session_state["selected"] !=  "image"):
             st.session_state["selected"] = "image"
@@ -97,7 +100,8 @@ def handle_image_upload():
             
         # except Exception:
         #     message("🔍 Something went wrong while analyzing the image.", is_user=True, allow_html=True)
- 
+    # for video in st.session_state['videos']:
+        
 
 def handle_video_upload():
 
@@ -140,30 +144,26 @@ def check_allergies(ingredients_text):
     message("Cool, let's take that into account.", logo=bot_image)
 
     if allergies:
-        with st.spinner('Wait for it...'):
-            messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
-            alarm = False
-            for advice in messages:  
-                obj = parse_ingredient_assessment(advice)
-                if obj:
-                    if alarm == False and obj["safety_status"] == "dangerous":
-                        with open("./static/alert.mp3", "rb") as f:
-                            data = f.read()
-                            audio_base64 = base64.b64encode(data).decode('utf-8')
-                            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-                            st.markdown(audio_tag, unsafe_allow_html=True)
-                        alarm = True 
-                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
-                    message(result, logo=bot_image, allow_html=True)
+    
+        messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
+        alarm = False
+        for advice in messages:  
+            obj = parse_ingredient_assessment(advice)
+            if obj:
+                if alarm == False and obj["safety_status"] == "dangerous":
+                    with open("./static/alert.mp3", "rb") as f:
+                        data = f.read()
+                        audio_base64 = base64.b64encode(data).decode('utf-8')
+                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
+                        # st.markdown(audio_tag, unsafe_allow_html=True)
+                    alarm = True 
+                result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
+                message(result, logo=bot_image, allow_html=True)
 
               
-            message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=bot_image)
-            with st.spinner('Wait for it...'):
-                allergies = ", ".join(allergies) 
-                values = generate_videos(allergies)
-                for value in values:
-                    if(value[0] == "message"):
-                        message(value[1], logo=bot_image)
-                    else:
-                        st.video(value[1])
-                        message(value[0], logo=bot_image)
+        message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=doctor_image)
+    
+        allergies = ", ".join(allergies) 
+        generate_videos(allergies)
+
+                        

@@ -23,6 +23,11 @@ if st.session_state["allergies_selected"]:
     )
     message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
    
+    text = (
+        f"Share with a multimedia resource below or simply write in the chat"
+    )
+    message(text, logo="https://i.ibb.co/py1Kdv4/image.png")
+   
     media_input()
 else:
     st.markdown(
