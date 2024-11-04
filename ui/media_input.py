@@ -135,29 +135,35 @@ def bot_display_ingredients(ingredients_text):
 
 # Helper function to check allergies
 def check_allergies(ingredients_text):
-    allergies = list(set(st.session_state.get("user_allergies", [])))  # Remove duplicates
+
+    allergies = st.session_state.get("user_allergies", [])
     labels_html = generate_labels(allergies, label_type="allergy")
-    message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image, key=f"allergies_check_{time.time()}")
-    message("Cool, let's take that into account.", logo=bot_image, key=f"bot_acknowledge_{time.time()}")
+    message(f"<div class='ingredient-container'>and I'm also allergic to: <strong>{labels_html}</strong></div>", is_user=True, allow_html=True, logo=unknow_user_image)
+    message("Cool, let's take that into account.", logo=bot_image)
 
     if allergies:
-        messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
-        alarm = False
-        for advice in messages:
-            obj = parse_ingredient_assessment(advice)
-            if obj:
-                if not alarm and obj["safety_status"] == "dangerous":
-                    with open("./static/alert.mp3", "rb") as f:
-                        data = f.read()
-                        audio_base64 = base64.b64encode(data).decode('utf-8')
-                        audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
-                    alarm = True
-                result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
-                message(result, logo=bot_image, allow_html=True, key=f"alert_{time.time()}")
+        with st.spinner('Wait for it...'):
+            messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
+            alarm = False
+            for advice in messages:  
+                obj = parse_ingredient_assessment(advice)
+                if obj:
+                    if alarm == False and obj["safety_status"] == "dangerous":
+                        with open("./static/alert.mp3", "rb") as f:
+                            data = f.read()
+                            audio_base64 = base64.b64encode(data).decode('utf-8')
+                            audio_tag = f'<audio autoplay="true" src="data:audio/wav;base64,{audio_base64}">'
+                            st.markdown(audio_tag, unsafe_allow_html=True)
+                        alarm = True 
+                    result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
+                    message(result, logo=bot_image, allow_html=True)
 
-        message("Learn more about your allergies; we are preparing a video. This may take a while.", logo=doctor_image, key=f"video_prep_{time.time()}")
-        generate_videos(", ".join(allergies))
-
-# Main app execution
-if __name__ == "__main__":
-    media_input()
+              
+            message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=bot_image)
+            with st.spinner('Wait for it...'):
+                message("implementing video")
+                # allergies = ", ".join(allergies) 
+                # values = generate_videos(allergies)
+                # for value in values:
+                #     message(value, logo=bot_image)
+                    # st.video(value[1])
