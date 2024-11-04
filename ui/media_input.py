@@ -40,26 +40,24 @@ def media_input():
     _,col1, col2, col3 = st.columns(4)
 
     gallery = col1.button("🖼️ Upload a picture", type= "primary" if  st.session_state["selected"] == "image" else "secondary")
-    camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
-    video =  col3.button("📹 Add the video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
+    # camera =  col2.button("🤳 Take the picture", type= "primary" if  st.session_state["selected"] == "camera" else "secondary")
+    # video =  col3.button("📹 Add the video", type= "primary" if  st.session_state["selected"] == "video" else "secondary")
     if gallery or st.session_state["selected"] == "image":
         if(st.session_state["selected"] !=  "image"):
             st.session_state["selected"] = "image"
-            st.rerun()
+            st.rerun() 
         handle_image_upload()
-    if camera or st.session_state["selected"] == "camera":
-        
-        if(st.session_state["selected"] !=  "camera"):
-            st.session_state["selected"] = "camera"
-            st.rerun()
-        handle_camera_input()
-    if video or st.session_state["selected"] == "video":
-        if(st.session_state["selected"] !=  "video"):
-            st.session_state["selected"] = "video"
-            st.rerun()
-        handle_video_upload()
+    # if camera or st.session_state["selected"] == "camera":
+    #     if(st.session_state["selected"] !=  "camera"):
+    #         st.session_state["selected"] = "camera"
+    #         st.rerun()
+    #     handle_camera_input()
+    # if video or st.session_state["selected"] == "video":
+    #     if(st.session_state["selected"] !=  "video"):
+    #         st.session_state["selected"] = "video"
+    #         st.rerun()
+    #     handle_video_upload()
 
-    
     handle_text_prompt()
 
 # Function to apply custom styling to Streamlit UI
@@ -80,13 +78,12 @@ def apply_styling():
     """, unsafe_allow_html=True)
 
 def handle_image_upload():
-    selected = "image"
     uploaded_file = st.file_uploader("Upload an image of the food.", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         users_image = image_to_base64(uploaded_file.getvalue())
         with st.spinner("..."):
             time.sleep(0.5)
-            message(f'<img width="20%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image)
+            message(f'<img width="40%" style="float:right" src="data:image/png;base64,{users_image}"/>', is_user=True, allow_html=True, logo=unknow_user_image)
         with st.spinner("..."):
             time.sleep(0.5)
             message("A picture, cool! Analyzing the evidence...", logo=bot_image)
@@ -104,8 +101,6 @@ def handle_image_upload():
         
 
 def handle_video_upload():
-
-    selected = "video"
     uploaded_file = st.file_uploader("Upload a video of the food", type=["mp4", "mov"])
     if uploaded_file:
         st.video(uploaded_file)
@@ -113,7 +108,6 @@ def handle_video_upload():
 
 
 def handle_camera_input():
-    selected = "camera"
     enable = st.checkbox("Enable camera")
     img_file_buffer = st.camera_input("Take a picture", disabled=not enable)
     if img_file_buffer:
@@ -164,6 +158,7 @@ def check_allergies(ingredients_text):
         message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=doctor_image)
     
         allergies = ", ".join(allergies) 
+        print(allergies)
         generate_videos(allergies)
 
                         

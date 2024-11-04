@@ -1,13 +1,9 @@
-For the list of food allergies {0} with N symptoms, create a structured string that describes each allergy and its symptoms. 
+Create a visual sequence for the list of allergies {0} by highlighting affected areas on a silhouette. 
 For each allergy, start with the allergy name followed by a colon, and list each scene in square brackets to show movement for 5-second video clips.
 Each symptom description should be vivid, clear, and include medical and preventive elements, ensuring that the symptom is fully and effectively portrayed in a way that informs and educates viewers about prevention without unnecessary or distressing details.
 
 Format:
+	(Allergy Name: [person silhouette highlight affected area with color and description of symptom][additional symptom scenes to illustrate progression and preventive notes.])
 
-	(Allergy Name: [scene1][scene2]...)
-
-Example for peanut allergy:
-
-	(Peanut Allergy: [the person has swelling in the mouth and throat, occasionally putting their hand to their throat][Nausea, vomiting, abdominal pain and diarrhea may occur shortly after consumption and the person may occasionally touch their stomach.]),(...)
-
-Output the full string as a single, continuous line, ensuring clarity and structure for each allergy with N scenes.
+Example for multi allergies:
+	(Peanut Allergy: [person silhouette highlight throat in red for swelling and abdomen in orange for discomfort, mark skin patches for rash],[Peanut allergy symptoms include swelling of the lips, tongue, and throat, itchy skin rashes, difficulty breathing, nausea, and abdominal pain. In severe cases, it can cause anaphylaxis, a serious reaction requiring immediate medical attention.],[highlight nose in light red for nasal congestion as a secondary symptom, with prevention advice about avoiding cross-contamination with food allergens.]),(Pollen Allergy: [person silhouette highlight nose and eyes in red for itchiness and irritation],[Pollen allergies commonly cause sneezing, nasal congestion, red eyes, and watery discharge],[additional highlight on lungs for breathing difficulty in sensitive cases, emphasizing preventive measures like using air filters indoors and wearing masks outdoors during high pollen counts.]),(Pet Dander Allergy: [person silhouette highlight nose and chest in red for respiratory irritation, showing mild symptoms in nose and chest areas],[Pet dander allergies can cause symptoms like sneezing, coughing, itchy eyes, and breathing difficulties. Severe cases may lead to asthma-like symptoms],[focus on eyes in red for itchiness with preventive care tips like regular pet grooming and using air purifiers.]),(Shellfish Allergy: [person silhouette highlight throat for mild swelling and abdomen for potential gastrointestinal discomfort],[Symptoms include swelling around the lips and mouth, gastrointestinal pain, nausea, and vomiting. Severe cases may lead to anaphylactic reactions requiring medical attention],[Preventive advice includes avoiding shellfish and cross-contact with utensils used for shellfish.]),(Dust Mite Allergy: [person silhouette highlight nose, eyes, and chest in red for respiratory irritation and itchy eyes],[Dust mite allergies can lead to sneezing, nasal congestion, itchy, watery eyes, and coughing],[highlight chest and lungs if severe, with preventive advice on regular bedding washing, using allergen-proof covers, and maintaining a clean environment.])
