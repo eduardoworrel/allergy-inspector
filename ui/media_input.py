@@ -11,6 +11,7 @@ unknow_user_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/U
 bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 doctor_image = "https://i.ibb.co/6HMSRys/2.png"
 
+st.session_state["message_key"] = 1
 if 'videos' not in st.session_state:
     st.session_state['videos'] = []
 
@@ -138,9 +139,10 @@ def check_allergies(ingredients_text):
     message("Cool, let's take that into account.", logo=bot_image)
 
     if allergies:
-    
-        messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
-        alarm = False
+        messages = []
+        with st.spinner("loading.."):
+            messages = get_crossing_data_model_response(ingredients_text, ", ".join(allergies))
+            alarm = False
         for advice in messages:  
             obj = parse_ingredient_assessment(advice)
             if obj:
@@ -152,10 +154,11 @@ def check_allergies(ingredients_text):
                         # st.markdown(audio_tag, unsafe_allow_html=True)
                     alarm = True 
                 result = generate_alert(obj["emoji"], obj["ingredient_name"], obj["safety_status"], obj["description"].replace('"', ''))
-                message(result, logo=bot_image, allow_html=True)
+                message(result, logo=bot_image, allow_html=True, key=f'msg_{st.session_state["message_key"]}')
+                st.session_state["message_key"] += 1
 
               
-        message("Learn more about your allergies, we are preparing a video. this may take a while.", logo=doctor_image)
+        message("Learn more about your allergies, we are preparing videos and information about the symptoms of your allergies. this may take a while.", logo=doctor_image)
     
         allergies = ", ".join(allergies) 
         print(allergies)

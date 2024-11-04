@@ -13,7 +13,7 @@ Guidelines:
    - alert if there is a mild risk or possible cross-contamination.
    - safe if there is no allergy risk.
 2. The ingredient emoji should visually represent the ingredient (e.g., 🥛 for milk, 🌰 for nuts).
-3. Include only ingredients present in the list; avoid adding extra items.
+3. Include only ingredients present in the list; avoid repetition and adding extra items.
 4. Structure the list by ranking from most dangerous to safest.
 5. Description must be informative, short with a maximum of 2 lines and related to Ingredients.
 

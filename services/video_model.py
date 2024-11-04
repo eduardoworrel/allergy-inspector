@@ -8,18 +8,20 @@ bot_image = "https://i.ibb.co/py1Kdv4/image.png"
 doctor_image = "https://i.ibb.co/6HMSRys/2.png"
 
 bearer_token = st.secrets["ALLEGRO_API_KEY"]
-st.session_state["key"] = 1
+st.session_state["video_key"] = 1
 def generate_videos(allergies):
 
-    print("----start")
-    prompt = "".join(get_video_instructions_model_response(allergies))
-    allergy_list = re.findall(r'\((.*?)\)', prompt)
+    allergy_list = []
 
-    url = "https://api.rhymes.ai/v1/generateVideoSyn"
-    headers = {
-        "Authorization": f"Bearer {bearer_token}",
-        "Content-Type": "application/json"
-    }
+    with st.spinner('generating symptom descriptions...'):
+        prompt = "".join(get_video_instructions_model_response(allergies))
+        allergy_list = re.findall(r'\((.*?)\)', prompt)
+
+        url = "https://api.rhymes.ai/v1/generateVideoSyn"
+        headers = {
+            "Authorization": f"Bearer {bearer_token}",
+            "Content-Type": "application/json"
+        }
     
     for allergy in allergy_list:
         
@@ -36,14 +38,14 @@ def generate_videos(allergies):
             description =scenes[1]
             print("----scenes: "+ scenes[0])
             print("----description: "+ scenes[1])
-            with st.spinner('Wait for it...'):
+            with st.spinner(f'generating video for allergy symptoms to {title} ...'):
                 refined_prompt = scene
                 data = {
                     "refined_prompt": refined_prompt,
-                    "num_step": 50,
+                    "num_step": 90,
                     "cfg_scale": 7.5,
                     "user_prompt": refined_prompt,
-                    "rand_seed": 10000
+                    "rand_seed": 12345
                 }
                 response = requests.post(url, headers=headers, json=data)
                 response.raise_for_status()
@@ -73,9 +75,9 @@ def generate_videos(allergies):
                     else: 
                         video_link = status_data.get('data')
                         print(f"Vídeo finalizado para alergia '{title}'. URL:", video_link)
-                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs_{st.session_state["key"]}')
+                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs_{st.session_state["video_key"]}')
                         st.video(video_link)
-                        st.session_state["key"] += 1
+                        st.session_state["video_key"] += 1
                         finish = True
                 time.sleep(1)
         except requests.exceptions.RequestException as e:
