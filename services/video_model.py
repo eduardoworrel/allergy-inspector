@@ -52,6 +52,7 @@ def generate_videos(allergies):
                 response = requests.post(url, headers=headers, json=data)
                 response.raise_for_status()
                 response_data = response.json()
+                st.json(response_data)
                 request_id = response_data.get('data')
                 
                 if not request_id:
@@ -88,7 +89,7 @@ def generate_videos(allergies):
                     else: 
                         video_link = status_data.get('data')
                         print(f"Vídeo finalizado para alergia '{title}'. URL:", video_link)
-                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs_{{time.time()}}')
+                        message("Symptoms of " + (title if title.startswith("(") else title) + " : " +description, logo=doctor_image, key=f'mgs4_{{time.time()}}')
                         st.video(video_link)
                         finish = True
                 time.sleep(1)
